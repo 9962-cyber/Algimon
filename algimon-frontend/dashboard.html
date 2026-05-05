@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algimon - Dashboard</title>
+    <link rel="icon" type="image/png" href="images/algimonlogo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Oswald:wght@400;500;700&family=Dancing+Script:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <nav id="navbar" class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo-circle">
+                <img src="images/algimonlogo.png" alt="Algimon" class="nav-logo-image" onerror="this.src='https://via.placeholder.com/50'">
+            </div>
+            <div class="nav-titles">
+                <h1>ALGIMON</h1>
+                <p>FIRE PROTECTION SERVICES</p>
+            </div>
+        </div>
+        
+        <div class="nav-user desktop-only">
+            <div class="nav-notification">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notification-badge" id="notif-badge" style="display:none;">0</span>
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">
+                        Notifications
+                        <button class="notif-close-btn" id="notif-close-btn">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <div class="notif-content" id="notif-content">
+                        <!-- Populated by renderNotifications() in dashboard.js -->
+                        <div class="notif-loading" id="notif-loading">
+                            <i class="fa-solid fa-spinner fa-spin" style="color:#DD523C;font-size:1.2rem;"></i>
+                            <span style="font-size:0.85rem;color:#888;font-family:'Open Sans',sans-serif;">Loading notifications…</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-info user-profile-btn" onclick="openProfileModal()" title="Profile Settings">
+                <span class="welcome-text">Welcome,</span>
+                <span class="username" id="display-username"></span>
+            </div>
+            <button class="logout-btn ripple-btn hover-lift" onclick="promptLogout()">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+        </div>
+
+        <button id="mobile-toggle" class="mobile-toggle" aria-label="Toggle navigation menu">
+            <i class="ph ph-list"></i>
+        </button>
+    </nav>
+
+    <div id="mobile-menu" class="mobile-menu">
+        <div class="mobile-user-profile" onclick="openProfileModal()">
+            <i class="fa-solid fa-circle-user"></i> <span id="mobile-username"></span> (Profile)
+        </div>
+        <a href="#" class="mobile-link" onclick="openPropertiesManager(); closeMobileMenu();"><i class="fa-solid fa-building"></i> Manage Properties</a>
+        <a href="#" class="mobile-link" onclick="openScheduleModal(); closeMobileMenu();"><i class="fa-solid fa-calendar-plus"></i> Schedule Appointment</a>
+        <a href="#" class="mobile-link" onclick="promptLogout(); closeMobileMenu();"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+    </div>
+
+    <main class="dashboard-container">
+        <section class="stats-grid">
+            <div class="stat-card red hover-scale"><div class="stat-info"><span class="stat-label">Properties</span><span class="stat-value" id="stat-properties">2</span></div><i class="fa-regular fa-building stat-icon"></i></div>
+            <div class="stat-card blue hover-scale"><div class="stat-info"><span class="stat-label">Upcoming</span><span class="stat-value" id="stat-upcoming">1</span></div><i class="fa-regular fa-calendar stat-icon"></i></div>
+            <div class="stat-card green hover-scale"><div class="stat-info"><span class="stat-label">Completed</span><span class="stat-value" id="stat-completed">3</span></div><i class="fa-solid fa-box-archive stat-icon"></i></div>
+        </section>
+
+        <header class="dashboard-header">
+            <div>
+                <h2 class="page-title">Dashboard</h2>
+                <p class="page-subtitle">Manage your properties, appointments, and equipment</p>
+            </div>
+            <div class="header-actions desktop-only">
+                <button class="btn-outline-red ripple-btn hover-lift" onclick="openPropertiesManager()"><i class="fa-solid fa-building"></i> PROPERTIES</button>
+                <button class="btn-solid-red ripple-btn hover-lift" onclick="openScheduleModal()"><i class="fa-solid fa-plus"></i> SCHEDULE</button>
+            </div>
+        </header>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" id="tab-btn-upcoming" onclick="switchDashTab('upcoming')">Upcoming (1)</button>
+            <button class="tab-btn" id="tab-btn-history" onclick="switchDashTab('history')">History (1)</button>
+            <button class="tab-btn" onclick="switchDashTab('equipment')">My Equipment</button>
+        </div>
+
+        <section id="tab-upcoming" class="tab-content active-content">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-upcoming" placeholder="Search upcoming appointments..." onkeyup="filterAppointments('upcoming')">
+            </div>
+            <div class="empty-state" id="empty-upcoming" style="display: none;">
+                <i class="fa-regular fa-calendar-xmark empty-state-icon"></i>
+                <h3 class="empty-state-title">No Upcoming Appointments</h3>
+                <p class="empty-state-desc">You're all caught up! There are no scheduled services at this time.</p>
+                <button class="btn-solid-red ripple-btn hover-lift mt-3" onclick="openScheduleModal()"><i class="fa-solid fa-plus"></i> SCHEDULE NOW</button>
+            </div>
+            <div id="upcoming-appointments-list"></div>
+        </section>
+
+        <section id="tab-history" class="tab-content">
+            <div class="history-banner"><i class="fa-solid fa-box-archive"></i><div><strong style="font-family: 'Oswald', sans-serif; font-size:1.1rem; letter-spacing:0.5px;">Appointment History</strong><p>Complete record of all past fire safety services</p></div></div>
+            <div class="search-container" style="margin-bottom: 16px;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-history" placeholder="Search appointment history..." onkeyup="filterAppointments('history')">
+            </div>
+            <div id="history-appointments-list"></div>
+        </section>
+
+        <section id="tab-equipment" class="tab-content">
+            <div class="history-banner" style="background: #fff8f6; border-color: #fca5a5; color: #7f1d1d;">
+                <i class="fa-solid fa-fire-extinguisher"></i>
+                <div>
+                    <strong style="font-family: 'Oswald', sans-serif; font-size:1.1rem;">Equipment & Compliance Tracking</strong>
+                    <p>Monitor expiration dates of your fire protection equipment. Book renewals directly from here — completed bookings will automatically update renewal dates.</p>
+                </div>
+            </div>
+
+            <!-- DYNAMIC EQUIPMENT LIST — rendered by renderEquipmentTab() in dashboard.js -->
+            <div id="equipment-list-container"></div>
+
+
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Algimon Fire Protection</h3>
+                    <p>Professional fire protection and safety systems for commercial and industrial applications.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-phone"></i><div><a href="tel:0285223027">(02) 852 23027</a></div></li>
+                        <li><i class="fa-solid fa-mobile-screen"></i><div><a href="tel:09683036533">0968-3036533</a> / <a href="tel:09668958400">0966-8958400</a></div></li>
+                        <li><i class="fa-solid fa-envelope"></i><a href="mailto:leo.saquilayan@gmail.com">leo.saquilayan@gmail.com</a></li>
+                        <li><i class="fa-solid fa-location-dot"></i><a href="#" target="_blank">Block 5 Lot 10B Cardinal Crossing St. Baybreeze Executive Village, Wawa Taguig City</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="service.html" target="_blank" rel="noopener noreferrer">Services</a></li>
+                        <li><a href="about.html" target="_blank" rel="noopener noreferrer">About Us</a></li>
+                        <li><a href="home.html" target="_blank" rel="noopener noreferrer">Home</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-logo-col">
+                    <img src="images/algimonlogo.png" alt="Algimon Logo" class="footer-logo" loading="lazy" onerror="this.src='https://via.placeholder.com/120'">
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Algimon Fire Protection Services. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PROFILE MODAL -->
+    <div id="modal-profile" class="modal-overlay">
+        <div class="modal-box" style="max-width:540px;">
+            <button class="close-modal" onclick="closeProfileModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header-text"><h2>Edit Profile</h2><p>Your contact info here will be used for all appointments.</p></div>
+            <form id="form-profile" onsubmit="submitProfile(event)">
+                <div style="display:flex;gap:12px;">
+                    <div class="form-group" style="flex:1;margin-bottom:18px;"><label>First Name</label><input type="text" id="profile-firstname" name="first_name" placeholder="Juan" required></div>
+                    <div class="form-group" style="flex:1;margin-bottom:18px;"><label>Last Name</label><input type="text" id="profile-lastname" name="last_name" placeholder="Dela Cruz" required></div>
+                </div>
+                <div class="form-group"><label>Email Address</label><input type="email" id="profile-email" name="email_address" value="" required></div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <div class="input-icon-wrapper phone-wrapper">
+                        <span class="phone-prefix" title="Philippine country code">🇵🇭 +63</span>
+                        <input type="tel" id="profile-phone" name="phone_number"
+                               placeholder="09XX XXX XXXX  or  +639XX XXX XXXX"
+                               maxlength="16" value="" required>
+                    </div>
+                    <span class="error-text" id="profile-phone-error"></span>
+                    <span style="font-size:0.75rem;color:#999;font-family:'Open Sans',sans-serif;margin-top:4px;">
+                        Local: <strong>0917 123 4567</strong> &nbsp;·&nbsp; International: <strong>+63 917 123 4567</strong>
+                    </span>
+                </div>
+
+                <!-- Password Change Section -->
+                <div style="border-top:1px solid #eee;margin:20px 0 18px;padding-top:18px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                        <span style="font-family:'Oswald',sans-serif;font-size:1rem;color:#3e1f1c;text-transform:uppercase;letter-spacing:0.5px;">Change Password</span>
+                        <label class="toggle-switch small-switch">
+                            <input type="checkbox" id="toggle-change-password" onchange="togglePasswordSection()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div id="password-change-section" style="display:none;">
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label>Current Password</label>
+                            <div class="pw-input-wrapper">
+                                <input type="password" id="profile-current-password" name="current_password" placeholder="Enter your current password">
+                                <button type="button" class="pw-toggle-btn" onclick="togglePwVisibility('profile-current-password', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <span class="error-text" id="profile-current-pw-error"></span>
+                        </div>
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label>New Password</label>
+                            <div class="pw-input-wrapper">
+                                <input type="password" id="profile-new-password" name="new_password" placeholder="Min. 8 chars · 1 uppercase · 1 special char" oninput="checkPasswordStrength(this.value)">
+                                <button type="button" class="pw-toggle-btn" onclick="togglePwVisibility('profile-new-password', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <div id="pw-strength-bar" style="margin-top:8px;display:none;">
+                                <div style="height:4px;background:#e0e0e0;border-radius:2px;overflow:hidden;">
+                                    <div id="pw-strength-fill" style="height:100%;width:0%;border-radius:2px;transition:width 0.3s,background 0.3s;"></div>
+                                </div>
+                                <span id="pw-strength-label" style="font-size:0.78rem;color:#888;font-family:'Open Sans',sans-serif;"></span>
+                                <div class="password-reqs-hint" id="profile-pw-reqs"></div>
+                            </div>
+                            <div class="password-policy-box" id="profile-pw-policy-box" style="display:none;">
+                                <span class="policy-icon">&#128274;</span>
+                                <span>Must have: <strong>8+ characters</strong>, <strong>1 uppercase</strong> (A&ndash;Z), and <strong>1 special character</strong> (e.g.&nbsp;!&nbsp;@&nbsp;#&nbsp;$)</span>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:4px;">
+                            <label>Confirm New Password</label>
+                            <div class="pw-input-wrapper">
+                                <input type="password" id="profile-confirm-password" name="confirm_password" placeholder="Re-enter new password">
+                                <button type="button" class="pw-toggle-btn" onclick="togglePwVisibility('profile-confirm-password', this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <span class="error-text" id="profile-confirm-pw-error"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-modal-cancel ripple-btn hover-lift" onclick="closeProfileModal()">CANCEL</button>
+                    <button type="submit" class="btn-modal-submit ripple-btn hover-lift">SAVE CHANGES</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PROPERTIES MANAGER MODAL -->
+    <div id="modal-properties-manager" class="modal-overlay">
+        <div class="modal-box" style="max-width: 600px;">
+            <button class="close-modal" onclick="closePropertiesManager()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header-text" style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+                <div><h2 style="font-size: 1.6rem;">Manage Properties</h2><p style="margin:0;">View, edit, or remove your locations</p></div>
+                <button class="btn-solid-red ripple-btn hover-lift" onclick="openPropertyForm()" style="padding: 8px 16px; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> ADD NEW</button>
+            </div>
+            <div class="search-container" style="margin-bottom: 15px;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-properties" placeholder="Find a property..." onkeyup="renderPropertyList()">
+            </div>
+            <div class="property-list-container" id="property-list-container"></div>
+        </div>
+    </div>
+
+    <!-- PROPERTY FORM MODAL -->
+    <div id="modal-property-form" class="modal-overlay" style="z-index: 1050;">
+        <div class="modal-box">
+            <button class="close-modal" onclick="closePropertyForm()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header-text">
+                <h2 id="prop-form-title">Add New Property</h2>
+                <p id="prop-form-subtitle">Add a property to your managed locations</p>
+            </div>
+            <form id="form-manage-property" onsubmit="submitPropertyForm(event)">
+                <input type="hidden" id="prop-id" name="property_id">
+                <div class="form-group"><label>Property Name</label><input type="text" id="prop-name" name="property_name" placeholder="Main Office Building" required></div>
+                <div class="form-group"><label>Address</label><input type="text" id="prop-address" name="property_address" placeholder="123 Main Street" required></div>
+                <div class="form-group">
+                    <label>Property Type</label>
+                    <div class="select-wrapper">
+                        <select id="prop-type" name="property_type" required>
+                            <option value="" disabled selected>Select type</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Industrial">Industrial</option>
+                            <option value="Residential">Residential</option>
+                            <option value="Institutional">Institutional</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-modal-cancel ripple-btn hover-lift" onclick="closePropertyForm()">CANCEL</button>
+                    <button type="submit" class="btn-modal-submit ripple-btn hover-lift" id="prop-submit-btn">SAVE PROPERTY</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCHEDULE MODAL -->
+    <div id="modal-schedule" class="modal-overlay">
+        <div class="modal-box modal-split">
+            <div class="modal-left-panel">
+                <div class="calendar-card">
+                    <div class="cal-header-black">
+                        <h3>SELECT DATE</h3>
+                        <div class="cal-nav-row">
+                            <button type="button" class="ripple-btn" onclick="prevMonth('schedule')"><i class="fa-solid fa-chevron-left"></i></button>
+                            <div class="cal-dropdown-container">
+                                <select id="cal-month-schedule" class="cal-native-select" onchange="changeCalMonthYear('schedule')"></select>
+                                <select id="cal-year-schedule" class="cal-native-select" onchange="changeCalMonthYear('schedule')"></select>
+                            </div>
+                            <button type="button" class="ripple-btn" onclick="nextMonth('schedule')"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                        <p id="cal-hint-schedule" style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin:10px 0 0;text-align:center;font-family:'Open Sans',sans-serif;letter-spacing:0.3px;">
+                            <i class="fa-solid fa-circle-info"></i> Earliest available date is 3 days from today
+                        </p>
+                    </div>
+                    <div class="cal-days-red"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div>
+                    <div id="calendar-days-schedule" class="cal-grid-white"></div>
+                </div>
+                <input type="hidden" id="selected-schedule-date" name="schedule_date" form="form-schedule" required>
+            </div>
+            
+            <div class="modal-right-form">
+                <div class="modal-header-text"><h2>Schedule Appointment</h2></div>
+                
+                <div class="contact-info-box">
+                    <div class="c-info-header">
+                        <span><i class="fa-solid fa-address-card"></i> Contact Information</span>
+                        <a href="#" onclick="closeScheduleModal(); openProfileModal();">Update in Profile</a>
+                    </div>
+                    <p><strong>Email:</strong> <span id="display-prof-email"></span></p>
+                    <p><strong>Phone:</strong> <span id="display-prof-phone"></span></p>
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 5px;">* Our staff will use these details to contact you regarding this appointment.</p>
+                </div>
+
+                <form id="form-schedule" onsubmit="submitSchedule(event)">
+                    <input type="hidden" id="schedule-equipment-id" name="equipment_id">
+                    
+                    <div class="form-group">
+                        <label>Service Type</label>
+                        <div class="select-wrapper">
+                            <select id="schedule-service" name="service_type" onchange="showServiceDetails(); checkDuplicateInline();" required>
+                                <option value="" disabled selected>Select a service</option>
+                                <option value="CCTV Surveillance">CCTV Surveillance</option>
+                                <option value="Detectors & Pull Stations">Detectors &amp; Pull Stations</option>
+                                <option value="FDAS Design & Install">FDAS Design &amp; Install</option>
+                                <option value="Fire Alarm Installation">Fire Alarm Installation</option>
+                                <option value="Fire Drill Training">Fire Drill Training</option>
+                                <option value="Fire Extinguisher Check">Fire Extinguisher Check</option>
+                                <option value="Fire Safety Inspection">Fire Safety Inspection</option>
+                                <option value="Nurse Call Systems">Nurse Call Systems</option>
+                                <option value="Safety Inspections">Safety Inspections</option>
+                                <option value="System Troubleshooting">System Troubleshooting</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down select-arrow"></i>
+                        </div>
+                        
+                        <div id="service-price-info" class="service-price-box" style="display: none;">
+                            <div class="s-price-title"><i class="fa-solid fa-tag"></i> Est. Pricing: <span id="s-price-val" style="color: #DD523C;"></span></div>
+                            <div class="s-price-desc" id="s-price-desc"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Time</label>
+                        <div class="custom-time-trigger hover-lift" onclick="openTimePicker('schedule')"><span id="display-selected-time">Select time</span><i class="fa-regular fa-clock"></i></div>
+                        <input type="hidden" id="selected-schedule-time" name="schedule_time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select Property</label>
+                        <div class="select-wrapper">
+                            <select id="select-saved-property" name="property_id" required onchange="checkDuplicateInline()"></select>
+                            <i class="fa-solid fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+
+                    <!-- Inline duplicate booking warning -->
+                    <div id="duplicate-booking-warning" style="display:none;background:#fff8f6;border:1px solid #DD523C;border-radius:8px;padding:12px 15px;margin-bottom:16px;animation:fadeIn 0.3s ease;">
+                        <div style="display:flex;align-items:center;gap:10px;color:#b91c1c;">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size:1.1rem;flex-shrink:0;"></i>
+                            <span id="duplicate-warning-text" style="font-family:'Open Sans',sans-serif;font-size:0.9rem;line-height:1.4;"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Notes <span style="font-size: 0.85rem; color: #888; font-family: 'Open Sans', sans-serif; font-weight: normal; text-transform: none;">(Optional)</span></label>
+                        <textarea id="schedule-notes" name="service_notes" rows="3" placeholder="Provide any specific details, access instructions, or describe your exact situation..." style="resize: vertical; min-height: 80px; font-family: 'Open Sans', sans-serif;"></textarea>
+                    </div>
+                    <div class="modal-buttons" style="padding-bottom: 20px;">
+                        <button type="button" class="btn-modal-cancel ripple-btn hover-lift" onclick="closeScheduleModal()">CANCEL</button>
+                        <button type="submit" class="btn-modal-submit dark-btn ripple-btn hover-lift">SCHEDULE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESCHEDULE MODAL -->
+    <div id="modal-reschedule" class="modal-overlay">
+        <div class="modal-box modal-split">
+            <div class="modal-left-panel">
+                <div class="calendar-card">
+                    <div class="cal-header-black">
+                        <h3>SELECT NEW DATE</h3>
+                        <div class="cal-nav-row">
+                            <button type="button" class="ripple-btn" onclick="prevMonth('reschedule')"><i class="fa-solid fa-chevron-left"></i></button>
+                            <div class="cal-dropdown-container">
+                                <select id="cal-month-reschedule" class="cal-native-select" onchange="changeCalMonthYear('reschedule')"></select>
+                                <select id="cal-year-reschedule" class="cal-native-select" onchange="changeCalMonthYear('reschedule')"></select>
+                            </div>
+                            <button type="button" class="ripple-btn" onclick="nextMonth('reschedule')"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="cal-days-red"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div>
+                    <div id="calendar-days-reschedule" class="cal-grid-white"></div>
+                </div>
+                <input type="hidden" id="reschedule-date" name="new_reschedule_date" form="form-reschedule" required>
+            </div>
+            <div class="modal-right-form">
+                <div class="modal-header-text" style="margin-bottom: 15px;"><h2>Reschedule Appointment</h2><p>Select a new date and time for your appointment</p></div>
+                
+                <div class="reschedule-info-card">
+                    <h3 id="reschedule-display-service">Service Name</h3>
+                    <p id="reschedule-display-property">Property Name</p>
+                </div>
+                
+                <form id="form-reschedule" onsubmit="submitReschedule(event)">
+                    <input type="hidden" id="reschedule-apt-id" name="appointment_id">
+                    
+                    <div class="form-group">
+                        <label>New Time</label>
+                        <div class="custom-time-trigger hover-lift" onclick="openTimePicker('reschedule')" style="height: 50px;">
+                            <span id="display-reschedule-time" style="color: #888;">Select time</span>
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <input type="hidden" id="reschedule-time" name="new_reschedule_time" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label>Reason for Rescheduling</label>
+                        <div class="select-wrapper">
+                            <select id="reschedule-reason" name="reschedule_reason" required>
+                                <option value="" disabled selected>Select a reason...</option>
+                                <option value="Schedule conflict">Schedule conflict</option>
+                                <option value="Emergency / Unexpected event">Emergency / Unexpected event</option>
+                                <option value="Incorrect original date">Incorrect original date selected</option>
+                                <option value="Property not ready">Property not ready for inspection</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+
+                    <div class="modal-buttons" style="margin-top: 15px;">
+                        <button type="button" class="btn-modal-cancel ripple-btn hover-lift" onclick="closeRescheduleModal()">CANCEL</button>
+                        <button type="submit" class="btn-modal-submit ripple-btn hover-lift">CONFIRM</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRM ACTION MODAL -->
+    <div id="modal-confirm-action" class="modal-overlay" style="z-index: 1150;">
+        <div class="modal-box success-modal-box">
+            <i class="fa-solid fa-triangle-exclamation success-icon" style="color: #DD523C;" id="confirm-icon"></i>
+            <h2 class="success-title" id="confirm-title">ARE YOU SURE?</h2>
+            <p class="success-message" id="confirm-message">This action cannot be undone.</p>
+            
+            <div id="cancel-reason-container" class="form-group" style="display: none; text-align: left;">
+                <label>Please select a reason for cancellation:</label>
+                <div class="select-wrapper">
+                    <select id="cancel-reason-select" name="cancellation_reason" required>
+                        <option value="" disabled selected>Select a reason...</option>
+                        <option value="Schedule conflict">Schedule conflict</option>
+                        <option value="Service no longer needed">Service no longer needed</option>
+                        <option value="Business closed / relocated">Business closed / relocated</option>
+                        <option value="Budget constraints">Budget constraints</option>
+                        <option value="Found another provider">Found another provider</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-arrow"></i>
+                </div>
+            </div>
+
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button type="button" class="btn-modal-cancel ripple-btn hover-lift" onclick="closeConfirmAction()">NO</button>
+                <button type="button" class="btn-modal-submit ripple-btn hover-lift" id="btn-execute-action">YES, PROCEED</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIME PICKER MODAL -->
+    <div id="modal-time-picker" class="modal-overlay" style="z-index: 1100;">
+        <div class="time-picker-box">
+            <div class="tp-header">
+                <div class="tp-title">SELECT TIME</div>
+                <div class="tp-display">
+                    <div class="tp-numbers"><span id="tp-hour-display" class="tp-active" onclick="switchTimeView('hour')">07</span><span style="opacity: 0.7; margin: 0 2px;">:</span><span id="tp-minute-display" onclick="switchTimeView('minute')">00</span></div>
+                    <div class="tp-ampm"><div id="tp-am-btn" class="tp-active" onclick="setAMPM('AM')">AM</div><div id="tp-pm-btn" onclick="setAMPM('PM')">PM</div></div>
+                </div>
+            </div>
+            <div class="tp-body">
+                <div id="tp-clock-container" class="tp-clock-container">
+                    <div class="tp-center-dot"></div><div id="tp-hand" class="tp-hand"></div><div id="tp-numbers-container" class="tp-numbers-container"></div>
+                </div>
+                <div id="tp-keyboard-container" class="tp-keyboard-container" style="display: none;">
+                    <div class="tp-key-inputs">
+                        <div class="tp-input-group"><input type="number" id="tp-key-hr" min="1" max="12" value="07" oninput="formatKeyboardInput()"><label style="font-family:'Oswald', sans-serif;">Hour</label></div>
+                        <span class="tp-colon">:</span>
+                        <div class="tp-input-group"><input type="number" id="tp-key-min" min="0" max="59" value="00" oninput="formatKeyboardInput()"><label style="font-family:'Oswald', sans-serif;">Minute</label></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Time slot availability hint (populated by JS from admin config) -->
+            <div id="tp-slot-hint" style="display:none;background:#fff8f0;border-top:1px solid #ffe4c4;padding:8px 20px;font-size:0.78rem;color:#92400e;font-weight:600;text-align:center;font-family:'Open Sans',sans-serif;letter-spacing:0.2px;"></div>
+            <div class="tp-footer">
+                <button type="button" class="tp-icon-btn ripple-btn" onclick="toggleTimeInputMode()"><i class="fa-solid fa-keyboard" id="tp-mode-icon"></i></button>
+                <div class="tp-actions">
+                    <button type="button" class="tp-text-btn ripple-btn" onclick="closeTimePicker()">CANCEL</button>
+                    <button type="button" class="tp-text-btn ripple-btn" onclick="confirmTimePicker()">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+    <div id="notification-container" class="notification-container"></div>
+
+    <a href="#" id="back-to-top" class="back-to-top" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </a>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

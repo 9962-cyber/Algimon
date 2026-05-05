@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algimon Footer Component</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 2. FOOTER SPECIFIC CSS --- */
+        
+        /* Variables needed for the footer colors */
+        :root {
+            --color-brand-red: #5e2121;
+            --color-brand-accent: #c94e32;
+            --color-brand-accent-hover: #e05e42;
+            --color-white: #ffffff;
+            --text-color-slate: #cbd5e1;
+        }
+
+        /* Basic Resets */
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; }
+
+        /* Footer Styles */
+        .site-footer { 
+            background-color: #4a1a1a; 
+            color: #cbd5e1; 
+            padding: 40px 0 20px; 
+            font-size: 13px; 
+            line-height: 1.5; 
+            width: 100%; 
+            font-family: 'Roboto', sans-serif; 
+        }
+        
+        .site-footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content { 
+            display: grid; 
+            grid-template-columns: 1.5fr 1.5fr 0.8fr 1fr; 
+            gap: 30px; 
+            margin-bottom: 30px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+            padding-bottom: 20px; 
+        }
+        
+        .footer-col h3 { 
+            font-family: 'Oswald', sans-serif; 
+            color: #ffffff; 
+            font-size: 18px; 
+            margin: 0 0 25px 0;
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            font-weight: 500; 
+            line-height: 1.4;
+        }
+
+        .footer-col p { margin: 0 0 15px 0; max-width: 300px; font-weight: 300; }
+        
+        .contact-list { list-style: none; padding-left: 0; margin: 0; }
+        .contact-list li { margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
+        .contact-list i { color: var(--color-brand-accent); margin-top: 3px; font-size: 13px; }
+        .contact-list a { color: #cbd5e1; text-decoration: none; transition: color 0.3s ease; }
+        .contact-list a:hover { color: var(--color-brand-accent-hover); }
+        
+        .footer-links { list-style: none; padding-left: 0; margin: 0; }
+        .footer-links li { margin-bottom: 6px; }
+        .footer-links a { 
+            color: #cbd5e1; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+            display: inline-block; 
+            font-family: 'Oswald', sans-serif; 
+            font-weight: 400; 
+            letter-spacing: 0.5px; 
+            font-size: 14px; 
+        }
+        .footer-links a:hover { color: var(--color-brand-accent-hover); transform: translateX(5px); }
+        
+        .footer-logo-col { display: flex; align-items: center; justify-content: center; }
+        .footer-logo { 
+            max-width: 120px; 
+            height: auto; 
+            border-radius: 50%; 
+            border: 3px solid rgba(255, 255, 255, 0.1); 
+            transition: transform 0.3s ease, border-color 0.3s ease; 
+            cursor: pointer; 
+        }
+        .footer-logo:hover { transform: scale(1.1); border-color: rgba(255, 255, 255, 0.3); }
+        
+        .footer-bottom { 
+            text-align: center; 
+            font-size: 12px; 
+            color: #94a3b8; 
+            font-family: 'Oswald', sans-serif; 
+            letter-spacing: 1px; 
+        }
+
+        /* Responsive Queries for Footer */
+        @media (max-width: 992px) {
+            .footer-content { grid-template-columns: 1fr 1fr; }
+            .footer-logo-col { justify-content: flex-start; }
+        }
+
+        @media (max-width: 600px) {
+            .footer-content { grid-template-columns: 1fr; gap: 30px; }
+            .footer-logo-col { justify-content: center; margin-top: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                
+                <div class="footer-col">
+                    <h3>Algimon Fire Protection</h3>
+                    <p>Professional fire protection and safety systems for commercial and industrial applications.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <i class="fa-solid fa-phone"></i>
+                            <div><a href="tel:0285223027">(02) 852 23027</a></div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-mobile-screen"></i>
+                            <div>
+                                <a href="tel:09683036533">0968-3036533</a> / 
+                                <a href="tel:09668958400">0966-8958400</a>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-envelope"></i>
+                            <a href="mailto:leo.saquilayan@gmail.com">leo.saquilayan@gmail.com</a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-location-dot"></i>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Block+5+Lot+10B+Cardinal+Crossing+St+Baybreeze+Executive+Village+Wawa+Taguig+City" target="_blank">
+                                Block 5 Lot 10B Cardinal Crossing St. Baybreeze Executive Village, Wawa Taguig City
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="homepage.html">Home</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col footer-logo-col">
+                    <img src="images/algimonlogo.png" alt="Algimon Logo" class="footer-logo">
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2025 Algimon Fire Protection Services. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

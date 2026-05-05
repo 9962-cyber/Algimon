@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algimon - Operation & Rules</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="operation-rules.css">
+</head>
+<body class="text-gray-800 antialiased overflow-x-hidden">
+    <!-- MOBILE TOP BAR -->
+    <div class="mobile-topbar md:hidden">
+        <button id="mobileMenuBtn" class="mobile-topbar-btn" aria-label="Open menu">
+            <i class="fas fa-bars text-sm"></i>
+        </button>
+        <span class="font-bold text-white text-sm tracking-tight">Algimon Admin</span>
+        <div style="width:36px"></div>
+    </div>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-[55] hidden md:hidden" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="fixed inset-y-0 left-0 w-64 bg-[#2c0e0e] text-white flex flex-col shadow-xl z-[60] transition-transform duration-300 transform -translate-x-full md:translate-x-0" id="sidebar">
+        <div class="p-4 mb-1 flex items-center border-b border-white/10 shrink-0">
+            <img src="images/algimonlogo.png" alt="Algimon Logo" class="w-16 h-16 mr-3 shrink-0 object-cover rounded-full">
+            <div>
+                <h1 class="font-bold text-md leading-tight">Algimon</h1>
+                <p class="text-xs text-white/60">Fire Protection Admin</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-1 overflow-y-visible mt-2 pb-2">
+            <a href="commandcenter.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-th-large w-5 text-center"></i><span>Command Center</span>
+            </a>
+            <a href="inquiries.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-envelope w-5 text-center"></i><span>Inquiries</span>
+            </a>
+            <!-- STAFF DROPDOWN -->
+<div class="relative">
+    <button onclick="toggleStaffDropdown()" 
+            id="staff-dropdown-btn"
+            class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px] w-full text-left">
+        <i class="fas fa-users w-5 text-center"></i>
+        <span>Staff</span>
+        <i class="fas fa-chevron-down ml-auto text-[10px] transition-transform duration-200" id="staff-chevron"></i>
+    </button>
+    <div id="staff-submenu" class="hidden mt-1 space-y-1">
+        <a href="staffmanagement.html" 
+           class="flex items-center gap-3 pl-11 pr-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+            <i class="fas fa-user-cog w-5 text-center"></i>
+            <span>Staff Management</span>
+        </a>
+        <a href="staffattendance.html" 
+           class="flex items-center gap-3 pl-11 pr-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+            <i class="fas fa-clock w-5 text-center"></i>
+            <span>Staff Attendance</span>
+        </a>
+    </div>
+</div>     
+            <a href="products.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-box w-5 text-center"></i><span>Products &amp; Equipment</span>
+            </a>
+           
+            <a href="operation-rules.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white bg-white/20 shadow-inner font-semibold transition-all duration-200 text-[13px]">
+                <i class="fas fa-cog w-5 text-center"></i><span>Operation &amp; Rules</span>
+            </a>
+            <a href="performance.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="far fa-file-alt w-5 text-center"></i><span>Performance Report</span>
+            </a>
+            <a href="audittrail.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-shield-alt w-5 text-center"></i><span>Audit Trail</span>
+            </a>
+        </nav>
+
+        <div class="border-t border-white/10 bg-[#2c0e0e] p-3 shrink-0">
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <div id="user-avatar" class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center font-bold text-xs shrink-0">A</div>
+                    <div class="overflow-hidden">
+                        <p id="user-name" class="text-xs font-semibold text-white truncate">Admin User</p>
+                        <p id="user-email" class="text-[10px] text-white/50 truncate">admin@algimon.com</p>
+                    </div>
+                </div>
+                <button id="logoutButton" class="flex items-center justify-center bg-red-700 hover:bg-red-800 text-white rounded-md p-1.5 transition-all duration-200 shadow-md">
+                    <i class="fas fa-sign-out-alt text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <p id="page-greeting" class="text-xs font-bold uppercase tracking-widest text-red-700 mb-1"></p>
+                <h1 class="text-3xl font-bold text-gray-800 mb-1">Operation &amp; Rules</h1>
+                <p class="text-gray-500 text-sm">Configure business hours and manage booking availability</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex gap-8 mb-8 border-b border-gray-200">
+                <button class="tab-btn active" onclick="switchTab('time-slots')"><i class="fas fa-clock text-lg"></i> Time Slots</button>
+                <button class="tab-btn" onclick="switchTab('blocked-dates')"><i class="fas fa-calendar text-lg"></i> Blocked Dates</button>
+            </div>
+
+            <!-- TIME SLOTS TAB -->
+            <div id="time-slots-tab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="lg:col-span-2">
+                        <h2 class="text-lg font-bold text-gray-800 mb-6">Available Time Slots</h2>
+                        <p class="text-sm text-gray-600 mb-6">Set the days and hours when customers can book appointments. Disabled days will not be available for booking.</p>
+                        <div id="days-container"></div>
+                        <button class="btn-primary mt-8" onclick="saveTimeSlots()"><i class="fas fa-save mr-2"></i> Save Time Slots</button>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800 mb-6">Business Hours Summary</h2>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6">
+                            <div id="summary-container" class="space-y-0"></div>
+                            <div class="border-t border-gray-200 mt-6 pt-6">
+                                <div class="flex justify-between items-center"><span class="font-semibold text-gray-800">Total Weekly Capacity</span><span class="text-2xl font-bold text-gray-800" id="total-capacity">0</span><span class="text-sm text-gray-500">slots</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLOCKED DATES TAB -->
+            <div id="blocked-dates-tab" class="hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2">
+                        <div class="form-card">
+                            <h3 class="text-lg font-bold text-gray-800 mb-6">Add Blocked Date</h3>
+                            <p class="text-sm text-gray-600 mb-6">Block specific dates when appointments cannot be scheduled (holidays, fully booked days, maintenance, etc.)</p>
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div><label class="form-label">Date</label><input type="date" id="blocked-date-input" class="form-input"></div>
+                                <div><label class="form-label">Reason</label><input type="text" id="blocked-reason-input" class="form-input" placeholder="e.g., Company Holiday, Fully Booked"></div>
+                            </div>
+                            <button class="btn-primary w-full" onclick="addBlockedDate()"><i class="fas fa-plus mr-2"></i> Add Blocked Date</button>
+                        </div>
+                        <div class="form-card">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Blocked Dates List <span id="blocked-count" class="text-gray-500">(0)</span></h3>
+                            <p class="text-sm text-gray-600 mb-6">All blocked dates unavailable for customer bookings</p>
+                            <div id="blocked-list-container"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-gray-800 mb-6">Calendar View</h3>
+                            <p class="text-sm text-gray-600 mb-6">Blocked dates are marked with an X</p>
+                            <div class="flex justify-between items-center mb-4">
+                                <button type="button" onclick="previousMonth()" class="text-gray-400 hover:text-gray-600 transition-colors"><i class="fas fa-chevron-left text-lg"></i></button>
+                                <h4 id="calendar-month" class="font-semibold text-gray-800">April 2026</h4>
+                                <button type="button" onclick="nextMonth()" class="text-gray-400 hover:text-gray-600 transition-colors"><i class="fas fa-chevron-right text-lg"></i></button>
+                            </div>
+                            <table class="calendar w-full text-sm">
+                                <thead>
+                                    <tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr>
+                                </thead>
+                                <tbody id="calendar-body"></tbody>
+                            </table>
+                            <div class="mt-6 pt-6 border-t border-gray-200">
+                                <div class="flex items-center gap-2 text-sm text-gray-600">
+                                    <span class="inline-block px-2 py-1 bg-red-200 rounded text-red-700 font-semibold">X</span><span>= Blocked Date</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] modal-transition" onclick="handleModalBackdrop(event)">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 transform transition-all" onclick="event.stopPropagation()">
+            <div class="p-5 text-center">
+                <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-sign-out-alt text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 mb-1">Ready to leave?</h3>
+                <p class="text-gray-500 text-xs mb-5">Are you sure you want to logout from Algimon Admin?</p>
+                <div class="flex gap-2">
+                    <button id="cancelLogoutBtn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg text-sm">Cancel</button>
+                    <button id="confirmLogoutBtn" class="flex-1 bg-red-700 hover:bg-red-800 text-white font-semibold py-2 rounded-lg text-sm shadow-md">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-[300] pointer-events-none" style="min-width:280px;max-width:90vw;">
+        <div id="toast-inner" class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-sm font-medium translate-y-4 opacity-0 transition-all duration-300 bg-gray-900 text-white">
+            <i id="toast-icon" class="fas fa-info-circle text-blue-400 shrink-0"></i>
+            <span id="toast-message">Message</span>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="scrollToTop()" aria-label="Back to top"
+        class="fixed bottom-6 right-6 z-[90] w-11 h-11 bg-[#2c0e0e] text-white rounded-full shadow-lg
+               flex items-center justify-center opacity-0 pointer-events-none
+               transition-all duration-300 md:bottom-8 md:right-8 hover:bg-[#4a1c1c]">
+        <i class="fas fa-chevron-up text-sm"></i>
+    </button>
+
+    <script src="audit-logger.js?v=3"></script>
+    <script src="confirm-modal.js"></script>
+    <script src="operation-rules.js?v=2"></script>
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('mobileMenuBtn').addEventListener('click', openSidebar);
+        document.querySelectorAll('#sidebar nav a').forEach(function(a) {
+            a.addEventListener('click', function() {
+                if (window.innerWidth < 768) closeSidebar();
+            });
+        });
+
+        // Time-aware greeting
+        (function() {
+            var h = new Date().getHours();
+            var greeting, emoji;
+            if (h < 12) { greeting = 'Good morning'; emoji = '☀️'; }
+            else if (h < 17) { greeting = 'Good afternoon'; emoji = '👋'; }
+            else { greeting = 'Good evening'; emoji = '🌙'; }
+
+            var topbar = document.querySelector('.mobile-topbar span');
+            if (topbar) topbar.textContent = 'Algimon Admin';
+
+            var el = document.getElementById('page-greeting');
+            if (el) el.innerHTML = greeting + ' ' + emoji;
+        })();
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ── STAFF DROPDOWN ──
+function toggleStaffDropdown() {
+    const submenu = document.getElementById('staff-submenu');
+    const chevron = document.getElementById('staff-chevron');
+    submenu.classList.toggle('hidden');
+    chevron.classList.toggle('rotate-180');
+}
+
+// Auto‑open & highlight if on a Staff sub‑page
+(function() {
+    const path = window.location.pathname.toLowerCase();
+    const isStaffPage = path.includes('staffmanagement') || path.includes('staffattendance');
+    const btn = document.getElementById('staff-dropdown-btn');
+    const submenu = document.getElementById('staff-submenu');
+    const chevron = document.getElementById('staff-chevron');
+
+    if (isStaffPage && btn && submenu && chevron) {
+        // Highlight parent button
+        btn.classList.remove('text-white/70');
+        btn.classList.add('text-white', 'bg-white/20', 'shadow-inner', 'font-semibold');
+        // Show submenu
+        submenu.classList.remove('hidden');
+        // Rotate chevron
+        chevron.classList.add('rotate-180');
+    }
+})();
+
+    </script>
+</body>
+</html>

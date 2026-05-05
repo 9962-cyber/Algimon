@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Algimon - Inquiries | Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="inquiries.css">
+</head>
+<body class="text-gray-800 antialiased">
+
+    <!-- Mobile menu button -->
+        <div style="width:36px"></div>
+    </div>
+    <!-- Sidebar -->
+        <!-- MOBILE TOP BAR -->
+    <div class="mobile-topbar md:hidden">
+        <button id="mobileMenuBtn" class="mobile-topbar-btn" aria-label="Open menu">
+            <i class="fas fa-bars text-sm"></i>
+        </button>
+        <span class="font-bold text-white text-sm tracking-tight">Algimon Admin</span>
+        <div style="width:36px"></div>
+    </div>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-[55] hidden md:hidden" onclick="closeSidebar()"></div>
+
+<aside class="fixed inset-y-0 left-0 w-64 bg-[#2c0e0e] text-white flex flex-col shadow-xl z-[60] transition-transform duration-300 transform -translate-x-full md:translate-x-0" id="sidebar">
+        <div class="p-4 mb-1 flex items-center border-b border-white/10 shrink-0">
+            <img src="images/algimonlogo.png" alt="Algimon Logo" class="w-16 h-16 mr-3 shrink-0 object-cover rounded-full">
+            <div>
+                <h1 class="font-bold text-md leading-tight">Algimon</h1>
+                <p class="text-xs text-white/60">Fire Protection Admin</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-1 overflow-y-visible mt-2 pb-2">
+            <a href="commandcenter.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-th-large w-5 text-center"></i>
+                <span>Command Center</span>
+            </a>
+            <a href="inquiries.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white bg-white/20 shadow-inner font-semibold transition-all duration-200 text-[13px]">
+                <i class="fas fa-envelope w-5 text-center"></i>
+                <span>Inquiries</span>
+            </a>
+            <!-- STAFF DROPDOWN -->
+<div class="relative">
+    <button onclick="toggleStaffDropdown()" 
+            id="staff-dropdown-btn"
+            class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px] w-full text-left">
+        <i class="fas fa-users w-5 text-center"></i>
+        <span>Staff</span>
+        <i class="fas fa-chevron-down ml-auto text-[10px] transition-transform duration-200" id="staff-chevron"></i>
+    </button>
+    <div id="staff-submenu" class="hidden mt-1 space-y-1">
+        <a href="staffmanagement.html" 
+           class="flex items-center gap-3 pl-11 pr-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+            <i class="fas fa-user-cog w-5 text-center"></i>
+            <span>Staff Management</span>
+        </a>
+        <a href="staffattendance.html" 
+           class="flex items-center gap-3 pl-11 pr-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+            <i class="fas fa-clock w-5 text-center"></i>
+            <span>Staff Attendance</span>
+        </a>
+     </div>
+   </div>
+
+            <a href="products.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-box w-5 text-center"></i>
+                <span>Products &amp; Equipment</span>
+           
+            <a href="operation-rules.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-cog w-5 text-center"></i>
+                <span>Operation &amp; Rules</span>
+            </a>
+            <a href="performance.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="far fa-file-alt w-5 text-center"></i>
+                <span>Performance Report</span>
+            </a>
+            <a href="audittrail.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-shield-alt w-5 text-center"></i>
+                <span>Audit Trail</span>
+            </a>
+        </nav>
+
+        <div class="border-t border-white/10 bg-[#2c0e0e] p-3 shrink-0">
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <div id="user-avatar" class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center font-bold text-xs shrink-0">A</div>
+                    <div class="overflow-hidden">
+                        <p id="user-name" class="text-xs font-semibold text-white truncate">Admin User</p>
+                        <p id="user-email" class="text-[10px] text-white/50 truncate">admin@algimon.com</p>
+                    </div>
+                </div>
+                <button id="logoutButton" class="flex items-center justify-center bg-red-700 hover:bg-red-800 text-white rounded-md p-1.5 transition-all duration-200 shadow-md">
+                    <i class="fas fa-sign-out-alt text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div>
+            <div class="mb-5">
+                <p id="page-greeting" class="text-xs font-bold uppercase tracking-widest text-red-700 mb-1"></p>
+                <h1 class="text-3xl font-bold text-gray-900 mb-1">Inquiries & Appointments</h1>
+                <p class="text-sm text-gray-500">Manage client inquiries and confirmed appointments</p>
+            </div>
+
+            <!-- Tab buttons -->
+            <div class="flex gap-2 mb-5">
+                <button id="tab-inquiries" onclick="switchTab('inquiries')"
+                    class="tab-btn active-tab px-5 py-2.5 rounded-xl text-sm font-semibold transition-all">
+                    <i class="fas fa-envelope mr-2"></i>Inquiries <span id="badge-inquiries" class="ml-1 bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+                <button id="tab-appointments" onclick="switchTab('appointments')"
+                    class="tab-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition-all">
+                    <i class="fas fa-calendar-check mr-2"></i>Appointments <span id="badge-appointments" class="ml-1 bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+
+            <!-- INQUIRIES SECTION -->
+            <div id="section-inquiries">
+                <!-- Filters -->
+                <div class="bg-white rounded-xl border border-gray-200 p-4 mb-5 space-y-3">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex items-center gap-2 flex-1 border border-gray-200 rounded-lg px-3 py-2">
+                            <i class="fas fa-search text-gray-400 text-sm"></i>
+                            <input type="text" id="search-input" class="bg-transparent outline-none flex-1 text-sm" placeholder="Search by name, company, email, or service...">
+                        </div>
+                        <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 min-w-[190px]">
+                            <i class="fas fa-filter text-gray-400 text-sm"></i>
+                            <select id="status-filter" class="bg-transparent outline-none text-sm flex-1">
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="in-progress">In-Progress</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="completed">Completed</option>
+                                <option value="">All Inquiries</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2">
+                        <i class="fas fa-industry text-gray-400 text-sm"></i>
+                        <select id="industry-filter" class="bg-transparent outline-none text-sm flex-1">
+                            <option value="">All Industries</option>
+                            <option value="commercial">Commercial</option>
+                            <option value="residential">Residential</option>
+                            <option value="industrial">Industrial</option>
+                            <option value="institutional">Institutional</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="inquiry-list" class="space-y-4"></div>
+                <div id="no-results-inquiries" class="hidden text-center py-12">
+                    <i class="fas fa-inbox text-4xl text-gray-300 mb-3 block"></i>
+                    <p class="text-gray-500">No inquiries found matching your filters.</p>
+                </div>
+            </div>
+
+            <!-- APPOINTMENTS SECTION (upcoming confirmed/in-progress) -->
+            <div id="section-appointments" class="hidden">
+                <div id="appointment-list" class="space-y-4"></div>
+                <div id="no-results-appointments" class="hidden text-center py-12">
+                    <i class="fas fa-calendar-times text-4xl text-gray-300 mb-3 block"></i>
+                    <p class="text-gray-500">No upcoming appointments.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .tab-btn { background: #f3f4f6; color: #6b7280; }
+        .tab-btn:hover { background: #e5e7eb; color: #374151; }
+        .active-tab { background: #2c0e0e !important; color: #fff !important; }
+        .active-tab .bg-yellow-100 { background: rgba(255,255,255,0.2) !important; color: #fff !important; }
+        .active-tab .bg-green-100  { background: rgba(255,255,255,0.2) !important; color: #fff !important; }
+    </style>
+
+    <!-- Inquiry Modal -->
+    <div id="inquiry-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modal-title" class="text-xl font-bold text-gray-800">Edit Inquiry</h2>
+                <button type="button" onclick="closeInquiryModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="inquiry-form" class="space-y-4">
+                <input type="hidden" id="inquiry-id" name="id">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Client Name *</label>
+                        <input type="text" id="clientName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Company / Property</label>
+                        <input type="text" id="company" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                        <input type="email" id="clientEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                        <input type="tel" id="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        <input type="text" id="address" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Service Type *</label>
+                        <input type="text" id="serviceType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Requested Date *</label>
+                        <input type="date" id="requestedDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Requested Time *</label>
+                        <input type="time" id="requestedTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-500" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Message/Details *</label>
+                    <textarea id="message" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-500" required></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
+                    <select id="modal-status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-red-500">
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In-Progress</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 pt-4">
+                    <button type="button" onclick="closeInquiryModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Cancel</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-800 transition-colors">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Shared inquiry card template (status-aware buttons injected by JS) -->
+    <template id="inquiry-card-template">
+        <div class="inquiry-card bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-3">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                        <h3 class="inquiry-name font-semibold text-gray-900 text-base"></h3>
+                        <span class="inquiry-status-badge px-2.5 py-0.5 rounded-full text-xs font-semibold"></span>
+                    </div>
+                    <p class="inquiry-company text-sm text-gray-500 mb-0.5"></p>
+                    <p class="inquiry-address text-xs text-gray-400 mb-0.5"></p>
+                    <p class="inquiry-contact text-xs text-gray-400"></p>
+                </div>
+                <div class="text-right shrink-0 ml-4">
+                    <p class="text-xs font-semibold text-gray-700">ID: <span class="inquiry-id font-mono"></span></p>
+                    <p class="text-xs text-gray-400 mt-0.5"><span class="inquiry-date"></span></p>
+                </div>
+            </div>
+            <div class="inquiry-details-grid grid gap-3 py-3 border-t border-b border-gray-100 mb-3">
+                <div>
+                    <p class="text-[11px] text-gray-400 mb-0.5">Service Type</p>
+                    <p class="inquiry-serviceType text-sm font-medium text-gray-800"></p>
+                </div>
+                <div>
+                    <p class="text-[11px] text-gray-400 mb-0.5">Requested Date</p>
+                    <p class="inquiry-requestedDate text-sm font-medium text-gray-800"></p>
+                </div>
+                <div>
+                    <p class="text-[11px] text-gray-400 mb-0.5">Requested Time</p>
+                    <p class="inquiry-requestedTime text-sm font-medium text-gray-800"></p>
+                </div>
+                <div class="inquiry-price-col hidden">
+                    <p class="text-[11px] text-gray-400 mb-0.5">Quoted Price</p>
+                    <p class="inquiry-price text-sm font-bold text-green-700"></p>
+                </div>
+            </div>
+            <div class="inquiry-staff-row hidden items-center gap-2 mb-2 text-xs">
+                <i class="fas fa-hard-hat text-amber-500 shrink-0"></i>
+                <span class="text-gray-400">Assigned to:</span>
+                <span class="inquiry-staff-name font-semibold text-gray-700"></span>
+            </div>
+            <p class="inquiry-message text-sm text-gray-500 mb-3 line-clamp-2 italic"></p>
+            <div class="inquiry-cancel-reason hidden bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-3 text-sm text-red-600">
+                <i class="fas fa-info-circle mr-1"></i><span class="cancel-reason-text"></span>
+            </div>
+            <!-- Buttons injected by JS -->
+            <div class="card-actions flex gap-2 flex-wrap"></div>
+        </div>
+    </template>
+
+    <style>
+        .inquiry-details-grid { grid-template-columns: repeat(3, 1fr); }
+        .inquiry-details-grid.has-price { grid-template-columns: repeat(4, 1fr); }
+    </style>
+
+    <!-- Assign Staff Modal -->
+    <div id="assign-modal" class="hidden fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-900">Assign Staff Member</h2>
+                    <p class="text-sm text-gray-500 mt-0.5">Select a technician for this appointment</p>
+                </div>
+                <button type="button" onclick="closeAssignModal()" class="text-gray-400 hover:text-gray-600 text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-5 space-y-1">
+                <p class="text-sm font-semibold text-gray-800" id="am-client"></p>
+                <p class="text-xs text-gray-500" id="am-service"></p>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    Staff Member <span class="text-red-500">*</span>
+                </label>
+                <select id="assign-staff-select"
+                    class="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl outline-none text-sm focus:border-[#2c0e0e] transition-colors bg-white">
+                    <option value="">— Select a staff member —</option>
+                </select>
+                <p id="assign-staff-error" class="text-red-500 text-xs mt-1 hidden">Please select a staff member.</p>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closeAssignModal()"
+                    class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 text-sm font-medium transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="submitAssign()"
+                    class="flex-1 px-4 py-2.5 bg-[#2c0e0e] text-white rounded-xl hover:bg-[#4a1c1c] text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-user-check"></i> Assign Staff
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quote Modal -->
+    <div id="quote-modal" class="hidden fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-900">Set Quote & Approve</h2>
+                    <p class="text-sm text-gray-500 mt-0.5">Set the price and approve the appointment</p>
+                </div>
+                <button type="button" onclick="closeQuoteModal()" class="text-gray-400 hover:text-gray-600 text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-4 mb-5 space-y-1">
+                <p class="text-sm font-semibold text-gray-800" id="qm-client"></p>
+                <p class="text-xs text-gray-500" id="qm-service"></p>
+                <p class="text-xs text-gray-500" id="qm-datetime"></p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        Quoted Price (₱) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden focus-within:border-[#2c0e0e] transition-colors">
+                        <span class="px-3 py-2.5 bg-gray-50 text-gray-500 font-bold border-r border-gray-200">₱</span>
+                        <input type="number" id="quote-price" min="0" step="0.01" placeholder="0.00"
+                            class="flex-1 px-3 py-2.5 outline-none text-sm bg-white">
+                    </div>
+                    <p id="quote-price-error" class="text-red-500 text-xs mt-1 hidden">Please enter a valid price.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Notes (optional)</label>
+                    <textarea id="quote-notes" rows="2" placeholder="Add any notes for the client..."
+                        class="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl outline-none text-sm focus:border-[#2c0e0e] transition-colors resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closeQuoteModal()"
+                    class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 text-sm font-medium transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="submitQuote()"
+                    class="flex-1 px-4 py-2.5 bg-[#2c0e0e] text-white rounded-xl hover:bg-[#4a1c1c] text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-check"></i> Approve Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] modal-transition" onclick="handleModalBackdrop(event)">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 transform transition-all" onclick="event.stopPropagation()">
+            <div class="p-5 text-center">
+                <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-sign-out-alt text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 mb-1">Ready to leave?</h3>
+                <p class="text-gray-500 text-xs mb-5">Are you sure you want to logout from Algimon Admin?</p>
+                <div class="flex gap-2">
+                    <button id="cancelLogoutBtn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg text-sm">Cancel</button>
+                    <button id="confirmLogoutBtn" class="flex-1 bg-red-700 hover:bg-red-800 text-white font-semibold py-2 rounded-lg text-sm shadow-md">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="audit-logger.js?v=3"></script>
+    <script src="confirm-modal.js"></script>
+    <script src="inquiries.js?v=5"></script>
+    <script>
+        // Time-aware greeting - FIXED VERSION
+(function() {
+    var h = new Date().getHours();
+    var greeting, emoji;
+    if (h < 12) { 
+        greeting = 'Good morning'; 
+        emoji = '☀️'; 
+    }
+    else if (h < 17) { 
+        greeting = 'Good afternoon'; 
+        emoji = '👋'; 
+    }
+    else { 
+        greeting = 'Good evening'; 
+        emoji = '🌙'; 
+    }
+
+    // Update mobile topbar
+    var topbar = document.querySelector('.mobile-topbar span');
+    if (topbar) {
+        topbar.textContent = 'Algimon Admin';
+    }
+
+    // Update page greeting
+    var el = document.getElementById('page-greeting');
+    if (el) {
+        el.innerHTML = greeting + ' ' + emoji;
+    }
+})();
+        function openSidebar() {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('mobileMenuBtn').addEventListener('click', openSidebar);
+        document.querySelectorAll('#sidebar nav a').forEach(function(a) {
+            a.addEventListener('click', function() {
+                if (window.innerWidth < 768) closeSidebar();
+            });
+        });
+
+        // ── STAFF DROPDOWN ──
+function toggleStaffDropdown() {
+    const submenu = document.getElementById('staff-submenu');
+    const chevron = document.getElementById('staff-chevron');
+    submenu.classList.toggle('hidden');
+    chevron.classList.toggle('rotate-180');
+}
+
+// Auto‑open & highlight if on a Staff sub‑page
+(function() {
+    const path = window.location.pathname.toLowerCase();
+    const isStaffPage = path.includes('staffmanagement') || path.includes('staffattendance');
+    const btn = document.getElementById('staff-dropdown-btn');
+    const submenu = document.getElementById('staff-submenu');
+    const chevron = document.getElementById('staff-chevron');
+
+    if (isStaffPage && btn && submenu && chevron) {
+        // Highlight parent button
+        btn.classList.remove('text-white/70');
+        btn.classList.add('text-white', 'bg-white/20', 'shadow-inner', 'font-semibold');
+        // Show submenu
+        submenu.classList.remove('hidden');
+        // Rotate chevron
+        chevron.classList.add('rotate-180');
+    }
+})();
+
+    </script>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-[300] pointer-events-none"
+         style="min-width:280px;max-width:90vw;">
+        <div id="toast-inner"
+             class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-sm font-medium
+                    translate-y-4 opacity-0 transition-all duration-300 bg-gray-900 text-white">
+            <i id="toast-icon" class="fas fa-info-circle text-blue-400 shrink-0"></i>
+            <span id="toast-message">Message</span>
+        </div>
+    </div>
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="scrollToTop()" aria-label="Back to top"
+        class="fixed bottom-6 right-6 z-[90] w-11 h-11 bg-[#2c0e0e] text-white rounded-full shadow-lg
+               flex items-center justify-center opacity-0 pointer-events-none
+               transition-all duration-300 md:bottom-8 md:right-8 hover:bg-[#4a1c1c]">
+        <i class="fas fa-chevron-up text-sm"></i>
+    </button>
+    
+</body>
+</html>
