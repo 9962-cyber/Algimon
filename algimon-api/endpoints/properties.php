@@ -129,10 +129,10 @@ function deleteProperty($id) {
     $stmt->bindParam(':id', $id);
     $stmt->bindParam(':user_id', $user['id']);
     
-    if ($stmt->execute() && $stmt->rowCount() > 0) {
+    if ($stmt->execute()) {
         ResponseHelper::success(null, "Property deleted successfully");
     } else {
-        ResponseHelper::error("Property not found or you do not have permission to delete it", 404);
+        ResponseHelper::error("Failed to delete property", 500);
     }
 }
 ?>

@@ -101,7 +101,7 @@ function _upsertAppointmentNotifications(PDO $db, int $userId): void {
     // Pull all non-pending appointments for this user that deserve a notification
     $stmt = $db->prepare(
         "SELECT a.id, a.service_type, a.appointment_date, a.appointment_time,
-                a.STATUS, a.actual_amount, a.price_estimate, a.cancel_reason,
+                a.STATUS, a.actual_amount, a.cancel_reason,
                 p.name AS property_name,
                 s.name AS staff_name,
                 a.updated_at
@@ -109,7 +109,7 @@ function _upsertAppointmentNotifications(PDO $db, int $userId): void {
          LEFT JOIN properties p ON a.property_id = p.id
          LEFT JOIN staff      s ON a.staff_id     = s.id
          WHERE a.client_id = :user_id
-           AND a.STATUS IN ('pending','approved','confirmed','in-progress','in_progress','completed','cancelled')
+           AND a.STATUS IN ('pending','approved','in_progress','completed','cancelled')
          ORDER BY a.updated_at DESC"
     );
     $stmt->bindParam(':user_id', $userId);
@@ -149,22 +149,15 @@ function _upsertAppointmentNotifications(PDO $db, int $userId): void {
                          . " has been submitted and is awaiting review.";
                 break;
 
-            case 'confirmed':
             case 'approved':
                 $type    = 'appointment_approved';
-                $title   = 'Appointment Confirmed';
-                $priceNotif = $apt['actual_amount']
-                    ? '₱' . number_format((float)$apt['actual_amount'], 2)
-                    : (isset($apt['price_estimate']) && $apt['price_estimate']
-                        ? '₱' . number_format((float)$apt['price_estimate'], 2)
-                        : '');
+                $title   = 'Appointment Approved';
                 $msg     = "Your {$service} at {$property} on {$date}"
                          . ($time ? " at {$time}" : '')
-                         . " has been confirmed."
-                         . ($priceNotif ? " Quoted price: {$priceNotif}." : '');
+                         . " has been approved."
+                         . ($amount ? " Assessed price: {$amount}." : '');
                 break;
 
-            case 'in-progress':
             case 'in_progress':
                 $type    = 'appointment_in_progress';
                 $title   = 'Service In Progress';

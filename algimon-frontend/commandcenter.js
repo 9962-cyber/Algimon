@@ -1,17 +1,16 @@
-// ── ADMIN AUTH GUARD ──────────────────────────────────────────────────────────
-// Runs immediately before anything else renders. Redirects to login if no
-// token, or back to the client dashboard if the logged-in user is a client.
-(function adminAuthGuard() {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    if (!token) { window.location.replace('login.html'); return; }
-    try {
-        const user = JSON.parse(
-            localStorage.getItem('user') || sessionStorage.getItem('user') || '{}'
-        );
-        if (!user || !user.type) { window.location.replace('login.html'); return; }
-        if (user.type === 'client') { window.location.replace('dashboard.html'); return; }
-    } catch (e) {
-        window.location.replace('login.html');
+// ── AUTH GUARD ──
+(function() {
+    const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null');
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    
+    if (!token || !user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    const adminRoles = ['admin', 'manager'];
+    if (!adminRoles.includes(user.type)) {
+        window.location.href = 'dash.html';
     }
 })();
 
@@ -322,8 +321,8 @@ const skeletonCards = `
 
     updateStats() {
         const pending    = this.inquiries.filter(i => i.status === 'pending').length;
-        const confirmed  = this.inquiries.filter(i => i.status === 'approved' || i.status === 'confirmed').length;
-        const inProgress = this.inquiries.filter(i => i.status === 'in_progress' || i.status === 'in-progress').length;
+        const confirmed  = this.inquiries.filter(i => i.status === 'confirmed').length;
+        const inProgress = this.inquiries.filter(i => i.status === 'in-progress').length;
         const completed  = this.inquiries.filter(i => i.status === 'completed').length;
         const cancelled  = this.inquiries.filter(i => i.status === 'cancelled').length;
 
@@ -335,7 +334,7 @@ const skeletonCards = `
         this.pieData = [
             { label: 'Pending',     value: pending,    color: '#fb923c' },
             { label: 'Confirmed',   value: confirmed,  color: '#22c55e' },
-            { label: 'In Progress', value: inProgress, color: '#3b82f6' },
+            { label: 'In-Progress', value: inProgress, color: '#3b82f6' },
             { label: 'Completed',   value: completed,  color: '#10b981' },
             { label: 'Cancelled',   value: cancelled,  color: '#f87171' },
         ];
@@ -378,14 +377,8 @@ const skeletonCards = `
         const today = new Date(); today.setHours(0, 0, 0, 0);
 
         const upcoming = this.inquiries
-            .filter(i => (
-                    i.status === 'approved'    ||
-                    i.status === 'confirmed'   ||
-                    i.status === 'in_progress' ||
-                    i.status === 'in-progress'
-                ) &&
-                i.requestedDate && new Date(i.requestedDate) >= today
-            )
+            .filter(i => (i.status === 'confirmed' || i.status === 'in-progress') &&
+                         i.requestedDate && new Date(i.requestedDate) >= today)
             .sort((a, b) => new Date(a.requestedDate) - new Date(b.requestedDate))
             .slice(0, 5);
 
@@ -407,14 +400,10 @@ const skeletonCards = `
             </div>`;
             return;
         }
-        const badgeClass = s =>
-            (s === 'in_progress' || s === 'in-progress') ? 'badge-inprogress' :
-            (s === 'confirmed')                          ? 'badge-confirmed'  :
-                                                           'badge-confirmed';
-        const badgeLabel = s =>
-            (s === 'in_progress' || s === 'in-progress') ? 'In Progress' :
-            (s === 'confirmed')                          ? 'Confirmed'   :
-                                                           'Approved';
+        const badgeClass = s => s === 'in-progress'
+            ? 'badge-inprogress'
+            : 'badge-confirmed';
+        const badgeLabel = s => s === 'in-progress' ? 'In-Progress' : 'Confirmed';
         container.innerHTML = items.map(item => `
             <div class="list-item py-3 px-1">
                 <div class="flex justify-between items-start gap-2">
