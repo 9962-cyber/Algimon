@@ -369,13 +369,11 @@ HTML;
 
         $firstName  = explode(' ', trim($clientName))[0];
         $statusMap  = [
-            'CONFIRMED'   => ['label' => 'Confirmed',   'color' => '#166534', 'bg' => '#dcfce7', 'icon' => '✅', 'subject' => '✅ Appointment Confirmed'],
-            'APPROVED'    => ['label' => 'Approved',    'color' => '#166534', 'bg' => '#dcfce7', 'icon' => '✅', 'subject' => '✅ Appointment Approved'],
-            'IN-PROGRESS' => ['label' => 'In Progress', 'color' => '#1e40af', 'bg' => '#dbeafe', 'icon' => '🔧', 'subject' => '🔧 Service In Progress'],
-            'IN_PROGRESS' => ['label' => 'In Progress', 'color' => '#1e40af', 'bg' => '#dbeafe', 'icon' => '🔧', 'subject' => '🔧 Service In Progress'],
-            'COMPLETED'   => ['label' => 'Completed',   'color' => '#166534', 'bg' => '#dcfce7', 'icon' => '🎉', 'subject' => '🎉 Service Completed'],
-            'CANCELLED'   => ['label' => 'Cancelled',   'color' => '#991b1b', 'bg' => '#fee2e2', 'icon' => '❌', 'subject' => '❌ Appointment Cancelled'],
-            'RESCHEDULED' => ['label' => 'Rescheduled', 'color' => '#92400e', 'bg' => '#fffbeb', 'icon' => '📅', 'subject' => '📅 Appointment Rescheduled'],
+            'APPROVED'    => ['label' => 'Approved',     'color' => '#166534', 'bg' => '#dcfce7', 'icon' => '✅', 'subject' => '✅ Appointment Approved'],
+            'IN_PROGRESS' => ['label' => 'In Progress',  'color' => '#1e40af', 'bg' => '#dbeafe', 'icon' => '🔧', 'subject' => '🔧 Service In Progress'],
+            'COMPLETED'   => ['label' => 'Completed',    'color' => '#166534', 'bg' => '#dcfce7', 'icon' => '🎉', 'subject' => '🎉 Service Completed'],
+            'CANCELLED'   => ['label' => 'Cancelled',    'color' => '#991b1b', 'bg' => '#fee2e2', 'icon' => '❌', 'subject' => '❌ Appointment Cancelled'],
+            'RESCHEDULED' => ['label' => 'Rescheduled',  'color' => '#92400e', 'bg' => '#fffbeb', 'icon' => '📅', 'subject' => '📅 Appointment Rescheduled'],
         ];
         $ns    = strtoupper($newStatus);
         $s     = $statusMap[$ns] ?? ['label' => $newStatus, 'color' => '#374151', 'bg' => '#f3f4f6', 'icon' => 'ℹ️', 'subject' => "Appointment Update"];
@@ -385,8 +383,7 @@ HTML;
                  . self::detailRow('Property', htmlspecialchars($d['property_name'] ?? 'N/A'))
                  . self::detailRow('Date', htmlspecialchars(date('F j, Y', strtotime($d['appointment_date']))))
                  . self::detailRow('Time', htmlspecialchars($d['appointment_time']))
-                 . (!empty($d['price_estimate']) ? self::detailRow('Quoted Price', '<strong style="color:#166534;">' . htmlspecialchars($d['price_estimate']) . '</strong>') : '')
-                 . (!empty($d['staff_name'])     ? self::detailRow('Technician',   htmlspecialchars($d['staff_name'])) : '');
+                 . ($d['staff_name'] ? self::detailRow('Technician', htmlspecialchars($d['staff_name'])) : '');
 
         $ctaLine = $ns === 'COMPLETED'
             ? self::notice('⭐', 'Thank you for choosing Algimon Fire Protection Services! Your safety is our priority.', '#f0fdf4', '#16a34a', '#14532d')
@@ -449,41 +446,6 @@ HTML;
             $mail->send();
             return true;
         } catch (Exception $e) { return false; }
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    //  ADMIN ALERT — internal notification (client cancel / reschedule)
-    // ─────────────────────────────────────────────────────────────────────────
-    public static function sendAdminAlert(string $subject, string $htmlBody): bool {
-        $mail = MailConfig::getMailer();
-        if (!$mail) return false;
-
-        $adminEmail = 'algimonfireprotectionservices@gmail.com';
-        $adminName  = 'Algimon Admin';
-
-        $body = '<div style="background:#fff;border-radius:8px;padding:32px;font-family:\'Segoe UI\',Arial,sans-serif;max-width:560px;margin:0 auto;border:1px solid #e5e7eb;">'
-              . '<div style="border-left:4px solid #df5345;padding-left:16px;margin-bottom:24px;">'
-              . '<h2 style="margin:0 0 4px;font-size:18px;color:#1f2937;">&#9888;&#65039; Admin Alert</h2>'
-              . '<p style="margin:0;font-size:13px;color:#6b7280;">Algimon Fire Protection &mdash; Internal Notification</p>'
-              . '</div>'
-              . '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:16px 20px;font-size:14px;color:#374151;line-height:1.7;">'
-              . $htmlBody
-              . '</div>'
-              . '<p style="margin:20px 0 0;font-size:12px;color:#9ca3af;">This is an automated internal alert. No action required unless you need to follow up.</p>'
-              . '</div>';
-
-        try {
-            $mail->addAddress($adminEmail, $adminName);
-            $mail->isHTML(true);
-            $mail->Subject = '[Algimon Alert] ' . $subject;
-            $mail->Body    = $body;
-            $mail->AltBody = strip_tags($htmlBody);
-            $mail->send();
-            return true;
-        } catch (Exception $e) {
-            error_log('[Algimon] sendAdminAlert failed: ' . $e->getMessage());
-            return false;
-        }
     }
 }
 ?>

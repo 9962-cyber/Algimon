@@ -45,9 +45,9 @@ function resetPassword() {
         return;
     }
     
-    // Validate password — must match frontend policy
-    if (!preg_match('/^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/', $newPassword)) {
-        ResponseHelper::error("Password must be at least 8 characters with at least 1 uppercase letter and 1 special character", 400);
+    // Validate password
+    if (strlen($newPassword) < 6) {
+        ResponseHelper::error("Password must be at least 6 characters", 400);
         return;
     }
     

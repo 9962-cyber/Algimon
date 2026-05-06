@@ -1923,14 +1923,6 @@ input:checked+.small-switch .slider:before {
     font-weight: 400;
 }
 
-.cal-day.blocked-date {
-    background: #fff0f0;
-    color: #e74c3c;
-    text-decoration: none;
-    border: 1px solid #fca5a5;
-    border-radius: 50%;
-}
-
 /* Time trigger */
 .custom-time-trigger {
     background: #f4f5f7;

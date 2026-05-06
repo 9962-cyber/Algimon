@@ -42,32 +42,15 @@ function updateProfile() {
     $stmt->bindParam(':id', $user['id']);
     
     if ($stmt->execute()) {
-
-        // Sync contact info on all active appointments for this client
-        if ($user['type'] === 'client') {
-            $syncQuery = "UPDATE appointments
-                          SET client_email = :email,
-                              client_phone = :phone,
-                              client_name  = :name
-                          WHERE client_id = :id
-                            AND STATUS NOT IN ('completed', 'cancelled')";
-            $syncStmt = $db->prepare($syncQuery);
-            $syncStmt->bindParam(':email', $data['email']);
-            $syncStmt->bindParam(':phone', $data['phone']);
-            $syncStmt->bindParam(':name',  $data['name']);
-            $syncStmt->bindParam(':id',    $user['id']);
-            $syncStmt->execute();
-        }
-
         // Return updated user data (frontend will update localStorage)
         $updatedUser = [
-            'id'    => $user['id'],
-            'name'  => $data['name'],
+            'id' => $user['id'],
+            'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
-            'type'  => $user['type']
+            'type' => $user['type']
         ];
-
+        
         ResponseHelper::success($updatedUser, "Profile updated successfully");
     } else {
         ResponseHelper::error("Failed to update profile", 500);
@@ -110,9 +93,9 @@ function changePassword() {
         return;
     }
     
-    // Validate new password — must match frontend policy
-    if (!preg_match('/^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/', $data['new_password'])) {
-        ResponseHelper::error("New password must be at least 8 characters with at least 1 uppercase letter and 1 special character", 400);
+    // Validate new password
+    if (strlen($data['new_password']) < 6) {
+        ResponseHelper::error("New password must be at least 6 characters", 400);
         return;
     }
     

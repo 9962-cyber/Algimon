@@ -29,16 +29,16 @@ function getDashboardStats() {
           AND YEAR(appointment_date)  = YEAR(CURDATE())
     ")->fetch(PDO::FETCH_ASSOC);
 
-    // Total clients (all rows in the users table are clients by definition)
+    // Total clients
     $clients = $db->query("
-        SELECT COUNT(*) AS total FROM users
+        SELECT COUNT(*) AS total FROM users WHERE type = 'client'
     ")->fetch(PDO::FETCH_ASSOC);
 
-    // Upcoming appointments (next 7 days) — statuses that are not yet done/cancelled
+    // Upcoming appointments (next 7 days)
     $upcoming = $db->query("
         SELECT COUNT(*) AS count
         FROM appointments
-        WHERE status IN ('pending','approved','in_progress')
+        WHERE status IN ('pending','confirmed')
           AND appointment_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
     ")->fetch(PDO::FETCH_ASSOC);
 
@@ -72,7 +72,7 @@ function getBookingsReport() {
                   SUM(CASE WHEN STATUS = 'completed'   THEN 1 ELSE 0 END) AS completed,
                   SUM(CASE WHEN STATUS = 'cancelled'   THEN 1 ELSE 0 END) AS cancelled,
                   SUM(CASE WHEN STATUS = 'approved'    THEN 1 ELSE 0 END) AS approved,
-                  SUM(CASE WHEN STATUS = 'in_progress' THEN 1 ELSE 0 END) AS in_progress,
+                  SUM(CASE WHEN STATUS = 'in-progress' THEN 1 ELSE 0 END) AS in_progress,
                   SUM(CASE WHEN STATUS = 'pending'     THEN 1 ELSE 0 END) AS pending,
                   SUM(actual_amount) AS revenue
               FROM appointments
@@ -132,10 +132,10 @@ function getPerformanceReport() {
         SELECT
             COUNT(*)                                                                AS total,
             SUM(status = 'completed')                                               AS completed,
-            SUM(status = 'cancelled')                                               AS declined,
+            SUM(status IN ('cancelled','declined'))                                 AS declined,
             SUM(status = 'pending')                                                 AS pending,
-            SUM(status = 'approved')                                                AS confirmed,
-            SUM(status = 'in_progress')                                             AS in_progress,
+            SUM(status IN ('confirmed','approved'))                                 AS confirmed,
+            SUM(status = 'in-progress')                                             AS in_progress,
             COALESCE(SUM(CASE WHEN status='completed' THEN COALESCE(actual_amount, price_estimate, 0) ELSE 0 END),0) AS revenue
         FROM appointments
         WHERE appointment_date BETWEEN :from AND :to
@@ -179,7 +179,7 @@ function getPerformanceReport() {
             MONTH(appointment_date)         AS mn,
             MONTHNAME(appointment_date)     AS month_name,
             SUM(status = 'completed')       AS completed,
-            SUM(status = 'cancelled')        AS cancelled
+            SUM(status IN ('cancelled','declined')) AS cancelled
         FROM appointments
         WHERE appointment_date BETWEEN :start AND :end
         GROUP BY yr, mn, month_name

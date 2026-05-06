@@ -256,9 +256,18 @@ document.getElementById('form-login').addEventListener('submit', async function 
 
             showMessage('login-message', 'Login successful! Redirecting…', 'success');
 
-            setTimeout(() => {
-                window.location.href = (type === 'client') ? 'dashboard.html' : 'commandcenter.html';
-            }, 1000);
+setTimeout(() => {
+    const type = result.data.user.type;
+    if (type === 'client') {
+        window.location.href = 'dashboard.html';
+    } else if (type === 'admin' || type === 'manager') {
+        window.location.href = 'commandcenter.html';
+    } else {
+        // technician, senior_technician, etc.
+        window.location.href = 'dash.html';
+    }
+}, 1000);
+
         } else {
             showMessage('login-message', result.message || 'Invalid email or password.', 'error');
             btn.disabled    = false;

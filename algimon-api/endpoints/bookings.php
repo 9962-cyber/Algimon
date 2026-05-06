@@ -182,7 +182,6 @@ function cancelBooking($id) {
     if ($stmt->execute()) {
         // Send cancellation email
         if (class_exists('MailerHelper')) {
-            // Email the client
             MailerHelper::sendAppointmentCancellation(
                 $user['email'],
                 $user['name'],
@@ -195,14 +194,6 @@ function cancelBooking($id) {
                     'cancel_reason'    => $reason,
                     'cancelled_date'   => date('F j, Y'),
                 ]
-            );
-            // Notify the admin
-            MailerHelper::sendAdminAlert(
-                'Appointment Cancelled by Client',
-                "Client <strong>{$user['name']}</strong> ({$user['email']}) has <strong>cancelled</strong> appointment #{$id}."
-                . "<br><strong>Service:</strong> {$booking['service_type']}"
-                . "<br><strong>Date:</strong> {$booking['appointment_date']}"
-                . "<br><strong>Reason:</strong> " . htmlspecialchars($reason)
             );
         }
         ResponseHelper::success(null, "Booking cancelled successfully");
@@ -262,7 +253,6 @@ function rescheduleBooking($id) {
     if ($stmt->execute() && $stmt->rowCount() > 0) {
         // Send reschedule email
         if (class_exists('MailerHelper') && $oldBooking) {
-            // Email the client
             MailerHelper::sendAppointmentRescheduled(
                 $user['email'],
                 $user['name'],
@@ -275,14 +265,6 @@ function rescheduleBooking($id) {
                     'new_time'          => date('h:i A', strtotime($newTime)),
                     'rescheduled_date'  => date('F j, Y'),
                 ]
-            );
-            // Notify the admin
-            MailerHelper::sendAdminAlert(
-                'Appointment Rescheduled by Client',
-                "Client <strong>{$user['name']}</strong> ({$user['email']}) has <strong>rescheduled</strong> appointment #{$id}."
-                . "<br><strong>Service:</strong> {$oldBooking['service_type']}"
-                . "<br><strong>Old Date:</strong> {$oldBooking['appointment_date']}"
-                . "<br><strong>New Date:</strong> {$newDate} at " . date('h:i A', strtotime($newTime))
             );
         }
         ResponseHelper::success(null, "Appointment rescheduled successfully");

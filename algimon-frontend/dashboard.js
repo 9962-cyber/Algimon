@@ -139,6 +139,7 @@ async function apiFetchProperties() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (!data.success) throw new Error(data.message);
+    console.log('Raw properties from DB:', data.data);
     return (data.data || []).map(p => ({
         id:      p.id,
         name:    p.NAME || p.name || p.property_name || '',  // ← handles uppercase NAME
@@ -163,33 +164,6 @@ async function apiFetchEquipment() {
         installDate: e.last_serviced,
         status: e.status
     }));
-}
-
-async function apiFetchBlockedDates() {
-    try {
-        const res  = await fetch(`${API_BASE_URL}/blocked-dates`);
-        const data = await res.json();
-        if (!data.success) return new Set();
-        return new Set((data.data || []).map(d => d.date)); // Set of 'YYYY-MM-DD'
-    } catch { return new Set(); }
-}
-
-async function apiFetchServices() {
-    try {
-        const res  = await fetch(`${API_BASE_URL}/services`);
-        const data = await res.json();
-        if (!data.success) return [];
-        return data.data || [];
-    } catch { return []; }
-}
-
-async function apiFetchTimeSlots() {
-    try {
-        const res  = await fetch(`${API_BASE_URL}/time-slots`);
-        const data = await res.json();
-        if (!data.success) return {};
-        return data.data || {};
-    } catch { return {}; }
 }
 
 
@@ -337,7 +311,7 @@ function normaliseBooking(b) {
                               })(b.appointment_time)
                             : '',
         status:           (b.status || 'PENDING').toUpperCase(),
-        final_price:      b.actual_amount  || b.price_estimate || b.final_price || b.price || null,
+        final_price:      b.actual_amount  || b.final_price  || b.price       || null,
         technician_name:  b.staff_name     || b.technician_name              || null,
         equipment_id:     b.equipment_id                                      || null,
         cancel_reason:    b.cancel_reason                                     || null,
@@ -357,9 +331,6 @@ function normaliseBooking(b) {
 let bookingsDB     = [];
 let propertiesList = [];
 let equipmentDB    = [];
-let blockedDatesSet = new Set();
-let servicesList    = [];
-let timeSlotsConfig = {}; // keyed by day name: { monday: { active, start, end }, ... }
 
 const typeIcons = {
     'Commercial': 'fa-building', 'Industrial': 'fa-industry',
@@ -595,21 +566,14 @@ function loadBookingsFromSession() {
 async function loadAllData() {
     showStatSkeletons();
     try {
-        const [props, equip, blocked, services, slots] = await Promise.all([
-            apiFetchProperties().catch(()  => []),
-            apiFetchEquipment().catch(()   => []),
-            apiFetchBlockedDates().catch(() => new Set()),
-            apiFetchServices().catch(()   => []),
-            apiFetchTimeSlots().catch(()  => {}),
+        const [props, equip] = await Promise.all([
+            apiFetchProperties().catch(() => []),
+            apiFetchEquipment().catch(() => []),
         ]);
-        propertiesList  = props;
-        equipmentDB     = equip;
-        blockedDatesSet = blocked;
-        servicesList    = services;
-        timeSlotsConfig = slots;
+        propertiesList = props;
+        equipmentDB    = equip;
         updatePropertyDropdowns();
         renderEquipmentTab();
-        populateServiceDropdown();
     } catch (err) {
         console.warn('[Algimon] Could not load properties/equipment:', err.message);
     }
@@ -1125,7 +1089,7 @@ async function submitProfile(event) {
         // 3. All good
         hydrateUserUI();
         closeProfileModal();
-        showToast('Profile updated successfully!', 'success');
+        showToast('profile');
 
     } catch (err) {
         console.error('Profile update error:', err);
@@ -1267,10 +1231,10 @@ async function submitPropertyForm(event) {
         });
         if (idVal) {
             propertiesList = propertiesList.map(p => String(p.id) === String(idVal) ? saved : p);
-            showToast('Property updated successfully!', 'success');
+            showToast('property-updated');
         } else {
             propertiesList.push(saved);
-            showToast('Property added successfully!', 'success');
+            showToast('property-added');
         }
         updateStatsUI();
         updatePropertyDropdowns();
@@ -1353,46 +1317,6 @@ function validateAddress(address) {
     if (trimmed.length < ADDRESS_MIN_LENGTH) return 'Address is too short. Please enter a complete street address.';
     if (!/\d/.test(trimmed))                 return 'Address should include a street number (e.g. "123 Main Street").';
     return null;
-}
-
-// ==========================================
-//   POPULATE SERVICE DROPDOWN FROM API
-// ==========================================
-function populateServiceDropdown() {
-    const select = document.getElementById('schedule-service');
-    if (!select || servicesList.length === 0) return;
-
-    // Save current value to re-select if possible
-    const prev = select.value;
-
-    // Rebuild options
-    select.innerHTML = '<option value="" disabled selected>Select a service</option>';
-    servicesList.forEach(svc => {
-        const opt = document.createElement('option');
-        opt.value = svc.name;
-        opt.textContent = svc.name;
-        select.appendChild(opt);
-    });
-
-    // Rebuild serviceDataInfo from live data
-    servicesList.forEach(svc => {
-        const priceStr = svc.minPrice && svc.maxPrice
-            ? `\u20B1${svc.minPrice.toLocaleString('en-PH')} \u2013 \u20B1${svc.maxPrice.toLocaleString('en-PH')}`
-            : svc.minPrice
-                ? `from \u20B1${svc.minPrice.toLocaleString('en-PH')}`
-                : 'Price on request';
-        serviceDataInfo[svc.name] = {
-            price: priceStr,
-            type:  svc.unit || 'Per Service',
-            renewable: svc.renewable,
-            note:  svc.renewable
-                ? `This service requires renewal every ${svc.renewalValue || 12} ${svc.renewalUnit || 'months'} for compliance.`
-                : 'One-time service. Final cost confirmed upon inspection.',
-        };
-    });
-
-    // Restore previous selection
-    if (prev) select.value = prev;
 }
 
 // ==========================================
@@ -1515,7 +1439,7 @@ async function submitSchedule(event) {
         await renderBookingsUI(true);
         renderEquipmentTab();
         closeScheduleModal();
-        showToast('Appointment submitted successfully! Awaiting admin review.', 'success');
+        showToast('schedule');
         notifyAppointmentCreated({ service: svcName, date: dateInput });
     } catch (err) {
         showModalError('schedule-form-error', 'Could not submit appointment: ' + err.message);
@@ -1612,7 +1536,7 @@ async function submitReschedule(event) {
         saveBookingsToSession();
         closeRescheduleModal();
         await renderBookingsUI(true);
-        showToast('Appointment rescheduled successfully!', 'success');
+        showToast('reschedule');
         notifyAppointmentRescheduled(capturedOldDate || 'original date', `${newDate} at ${displayTime}`);
     } catch (err) {
         showModalError('reschedule-form-error', 'Could not reschedule: ' + err.message);
@@ -1738,10 +1662,10 @@ async function handleExecuteAction() {
             closeConfirmAction();
             await renderBookingsUI(true);
             renderEquipmentTab();
-            setTimeout(() => showToast('Appointment cancelled successfully.', 'info'), 300);
+            setTimeout(() => showToast('cancel'), 300);
             notifyAppointmentCancelled(origDate, `apt-${dbId}`);
         } catch (err) {
-            showToast('Could not cancel appointment. Please try again.', 'error');
+            showToast('cancel-error');
             if (proceedBtn) { proceedBtn.disabled = false; proceedBtn.textContent = 'YES, PROCEED'; }
             closeConfirmAction();
         }
@@ -1755,9 +1679,9 @@ async function handleExecuteAction() {
             updateStatsUI();
             updatePropertyDropdowns();
             closeConfirmAction();
-            showToast('Property deleted successfully.', 'success');
+            showToast('property-deleted');
         } catch (err) {
-            showToast('Could not delete property. Please try again.', 'error');
+            showToast('delete-error');
             if (proceedBtn) { proceedBtn.disabled = false; proceedBtn.textContent = 'YES, PROCEED'; }
         }
     }
@@ -1780,7 +1704,7 @@ async function handleExecuteAction() {
 function checkUpcomingAppointments() {
     const today = new Date(); today.setHours(0, 0, 0, 0);
     bookingsDB.forEach(booking => {
-        if (booking.status !== 'APPROVED' && booking.status !== 'CONFIRMED' && booking.status !== 'PENDING') return;
+        if (booking.status !== 'APPROVED' && booking.status !== 'PENDING') return;
         const aptDate  = new Date(booking.date + 'T00:00:00'); aptDate.setHours(0, 0, 0, 0);
         const diffDays = Math.ceil((aptDate - today) / (1000 * 60 * 60 * 24));
         if (diffDays === 1) {
@@ -1850,7 +1774,7 @@ function generateUserBookingCard(booking) {
     let badgeClass = '', badgeIcon = '', badgeText = booking.status;
     let paymentUI = '', actionButtons = '', staffUI = '';
 
-    if (booking.technician_name && (booking.status === 'APPROVED' || booking.status === 'CONFIRMED' || booking.status === 'IN_PROGRESS' || booking.status === 'IN-PROGRESS')) {
+    if (booking.technician_name && (booking.status === 'APPROVED' || booking.status === 'IN_PROGRESS')) {
         staffUI = `
             <div class="assigned-staff-box" style="margin-top:15px;">
                 <div class="staff-icon"><i class="fa-solid fa-id-badge"></i></div>
@@ -1912,16 +1836,12 @@ function generateUserBookingCard(booking) {
                     <p style="margin:4px 0 0;font-size:0.82rem;color:#a16207;">Our team will assess your request and set a quoted price. You'll receive an email once approved.</p>
                 </div>
             </div>`;
-    } else if (booking.status === 'APPROVED' || booking.status === 'CONFIRMED') {
+    } else if (booking.status === 'APPROVED') {
         badgeClass = 'badge-approved'; badgeIcon = 'fa-thumbs-up';
-        badgeText  = 'CONFIRMED';
         const priceDisplay = priceStr ? `₱${priceStr}` : 'To be confirmed';
         const priceNote   = priceStr
             ? 'Please prepare the exact amount for on-site payment upon service completion.'
             : 'Our team will confirm the final amount before the service date.';
-        actionButtons = `
-            <button class="btn-card-outline ripple-btn hover-lift" onclick="openRescheduleModal('apt-${sanitize(String(booking.id))}','${sanitize(booking.date)}')"><i class="fa-regular fa-calendar-plus"></i> RESCHEDULE</button>
-            <button class="btn-card-outline ripple-btn hover-lift" onclick="promptCancelApt('apt-${sanitize(String(booking.id))}','${sanitize(booking.date)}')"><i class="fa-solid fa-xmark"></i> CANCEL</button>`;
         paymentUI  = `
             <div class="payment-notice" style="margin-top:15px;">
                 <i class="fa-solid fa-wallet"></i>
@@ -1930,7 +1850,7 @@ function generateUserBookingCard(booking) {
                     <p style="margin:0;font-size:0.85rem;color:#555;">${priceNote}</p>
                 </div>
             </div>`;
-    } else if (booking.status === 'IN_PROGRESS' || booking.status === 'IN-PROGRESS') {
+    } else if (booking.status === 'IN_PROGRESS') {
         badgeClass = 'badge-in-progress'; badgeIcon = 'fa-person-digging'; badgeText = 'IN-PROGRESS';
         paymentUI  = `
             <div class="payment-notice" style="background:#e0f2fe;border-color:#bae6fd;color:#0369a1;margin-top:15px;">
@@ -1947,7 +1867,7 @@ function generateUserBookingCard(booking) {
                 <i class="fa-solid fa-receipt"></i>
                 <div>
                     <strong>Paid &amp; Completed</strong>
-                    <p style="margin:0;font-size:0.85rem;">Amount Collected: ${priceStr ? '&#8369;' + priceStr : 'N/A'}</p>
+                    <p style="margin:0;font-size:0.85rem;">Amount Collected: ₱${priceStr}</p>
                 </div>
             </div>`;
     }
@@ -2110,27 +2030,18 @@ function renderCalendar(target) {
                 dayDiv.title = 'Today (not available — 3 days advance required)';
             }
         } else {
-            // Check if this date is blocked by admin
-            const dateStr = `${cy}-${String(cm + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-            if (blockedDatesSet.has(dateStr)) {
-                dayDiv.classList.add('disabled-date', 'blocked-date');
-                dayDiv.title = 'This date is unavailable (blocked by admin)';
-                dayDiv.style.position = 'relative';
-                dayDiv.innerHTML = `${i}<span style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:0.55rem;color:#b91c1c;font-weight:700;">✕</span>`;
-            } else {
-                const sel = selectedDateObj[target];
-                if (sel && sel.getDate() === i && sel.getMonth() === cm && sel.getFullYear() === cy) {
-                    dayDiv.classList.add('selected');
-                }
-                dayDiv.onclick = function () {
-                    daysContainer.querySelectorAll('.cal-day').forEach(el => el.classList.remove('selected'));
-                    dayDiv.classList.add('selected');
-                    selectedDateObj[target] = new Date(cy, cm, i);
-                    const valId = target === 'schedule' ? 'selected-schedule-date' : 'reschedule-date';
-                    document.getElementById(valId).value = dateStr;
-                    if (target === 'schedule') checkDuplicateInline();
-                };
+            const sel = selectedDateObj[target];
+            if (sel && sel.getDate() === i && sel.getMonth() === cm && sel.getFullYear() === cy) {
+                dayDiv.classList.add('selected');
             }
+            dayDiv.onclick = function () {
+                daysContainer.querySelectorAll('.cal-day').forEach(el => el.classList.remove('selected'));
+                dayDiv.classList.add('selected');
+                selectedDateObj[target] = new Date(cy, cm, i);
+                const valId = target === 'schedule' ? 'selected-schedule-date' : 'reschedule-date';
+                document.getElementById(valId).value = `${cy}-${String(cm + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                if (target === 'schedule') checkDuplicateInline();
+            };
         }
         daysContainer.appendChild(dayDiv);
     }
@@ -2157,51 +2068,11 @@ function nextMonth(target) {
 // ==========================================
 let tp_hour = 7, tp_minute = 0, tp_isAM = true, tp_view = 'hour', tp_target = 'schedule', tp_mode = 'clock';
 
-// Returns the admin time-slot config for a given JS Date object (or today if null)
-function getTimeSlotsForDate(dateObj) {
-    if (!dateObj || Object.keys(timeSlotsConfig).length === 0) return null;
-    const dayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    const dayKey   = dayNames[dateObj.getDay()];
-    const cfg      = timeSlotsConfig[dayKey];
-    if (!cfg || !cfg.active) return null; // day is inactive
-    return cfg; // { active, start: 'HH:MM', end: 'HH:MM', maxSlots }
-}
-
-// Shows a hint banner on the time picker with allowed hours for the selected date
-function showTimeSlotHint(target) {
-    const dateStr  = target === 'schedule'
-        ? document.getElementById('selected-schedule-date')?.value
-        : document.getElementById('reschedule-date')?.value;
-    const hintEl   = document.getElementById('tp-slot-hint');
-    if (!hintEl) return;
-
-    if (!dateStr) { hintEl.style.display = 'none'; return; }
-
-    const dateObj  = new Date(dateStr + 'T00:00:00');
-    const cfg      = getTimeSlotsForDate(dateObj);
-
-    if (!cfg) {
-        hintEl.style.display = 'none';
-        return;
-    }
-
-    // Convert 24h to 12h for display
-    const fmt = t => {
-        const [h, m] = t.split(':').map(Number);
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        const h12  = h % 12 || 12;
-        return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
-    };
-    hintEl.textContent = `⏰ Available: ${fmt(cfg.start)} – ${fmt(cfg.end)}`;
-    hintEl.style.display = 'block';
-}
-
 function openTimePicker(target = 'schedule') {
     tp_target = target;
     document.getElementById('modal-time-picker')?.classList.add('active');
     updateTimeDisplay();
     switchTimeView('hour');
-    showTimeSlotHint(target);
 }
 function closeTimePicker() { document.getElementById('modal-time-picker')?.classList.remove('active'); }
 
@@ -2210,45 +2081,6 @@ function confirmTimePicker() {
         tp_hour   = Math.min(12, Math.max(1, parseInt(document.getElementById('tp-key-hr')?.value)  || 12));
         tp_minute = Math.min(59, Math.max(0, parseInt(document.getElementById('tp-key-min')?.value) || 0));
     }
-
-    // ── Validate against admin time-slot config ──────────────────────────────
-    const dateStr = tp_target === 'schedule'
-        ? document.getElementById('selected-schedule-date')?.value
-        : document.getElementById('reschedule-date')?.value;
-
-    if (dateStr) {
-        const dateObj = new Date(dateStr + 'T00:00:00');
-        const cfg     = getTimeSlotsForDate(dateObj);
-
-        if (cfg) {
-            // Convert selected 12h time → 24h minutes-since-midnight
-            let h24 = tp_hour;
-            if (!tp_isAM && h24 !== 12) h24 += 12;
-            if  (tp_isAM && h24 === 12) h24  = 0;
-            const selectedMins = h24 * 60 + tp_minute;
-
-            const [startH, startM] = cfg.start.split(':').map(Number);
-            const [endH,   endM  ] = cfg.end.split(':').map(Number);
-            const startMins = startH * 60 + startM;
-            const endMins   = endH   * 60 + endM;
-
-            const fmt = t => {
-                const [h, m] = t.split(':').map(Number);
-                const ampm = h >= 12 ? 'PM' : 'AM';
-                return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${ampm}`;
-            };
-
-            if (selectedMins < startMins || selectedMins > endMins) {
-                showModalError(
-                    tp_target === 'schedule' ? 'schedule-form-error' : 'reschedule-form-error',
-                    `⏰ Please choose a time between ${fmt(cfg.start)} and ${fmt(cfg.end)} for this day.`
-                );
-                return; // don't close picker — let user correct
-            }
-        }
-    }
-    // ────────────────────────────────────────────────────────────────────────
-
     const hStr    = String(tp_hour).padStart(2, '0');
     const mStr    = String(tp_minute).padStart(2, '0');
     const ampmStr = tp_isAM ? 'AM' : 'PM';
