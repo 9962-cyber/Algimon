@@ -143,16 +143,25 @@ class PerformanceManager {
         document.getElementById('legend-confirmed').textContent = m.confirmed;
         document.getElementById('legend-completed').textContent = m.completed;
         document.getElementById('legend-pending').textContent   = m.pending;
+<<<<<<< HEAD
         const legendCancelledEl = document.getElementById('legend-cancelled');
         if (legendCancelledEl) legendCancelledEl.textContent = m.declined || 0;
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
 
         this.charts.status = new Chart(
             document.getElementById('statusChart').getContext('2d'), {
             type: 'doughnut',
             data: {
+<<<<<<< HEAD
                 labels: ['Confirmed', 'Completed', 'Pending', 'Cancelled'],
                 datasets: [{ data: [m.confirmed, m.completed, m.pending, m.declined || 0],
                              backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444'], borderWidth: 0 }]
+=======
+                labels: ['Confirmed', 'Completed', 'Pending'],
+                datasets: [{ data: [m.confirmed, m.completed, m.pending],
+                             backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b'], borderWidth: 0 }]
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });

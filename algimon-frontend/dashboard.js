@@ -565,8 +565,11 @@ function loadBookingsFromSession() {
 
 async function loadAllData() {
     showStatSkeletons();
+<<<<<<< HEAD
     // Load time-slot config first so calendar renders with correct disabled days
     await loadTimeSlotsConfig();
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     try {
         const [props, equip] = await Promise.all([
             apiFetchProperties().catch(() => []),
@@ -1961,6 +1964,7 @@ let currentMonthObj = { schedule: new Date().getMonth(), reschedule: new Date().
 let currentYearObj  = { schedule: new Date().getFullYear(), reschedule: new Date().getFullYear() };
 let selectedDateObj = { schedule: null, reschedule: null };
 
+<<<<<<< HEAD
 // Cached time-slot config fetched once from API
 let _timeSlotsConfig = null;
 const _dayNames = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
@@ -1982,6 +1986,8 @@ function isDayActive(jsDate) {
     return cfg ? cfg.active : true;
 }
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
 function populateCalendarDropdowns(target) {
     const mSelect = document.getElementById(`cal-month-${target}`);
     const ySelect = document.getElementById(`cal-year-${target}`);
@@ -2043,16 +2049,24 @@ function renderCalendar(target) {
         dayDiv.textContent = i;
         const thisDate = new Date(cy, cm, i);
         const isToday  = thisDate.getTime() === today.getTime();
+<<<<<<< HEAD
         const dayActive = isDayActive(thisDate);
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         if (thisDate < minDate) {
             dayDiv.classList.add('disabled-date');
             dayDiv.title = 'Requires at least 3 days advance notice';
             if (isToday) {
+<<<<<<< HEAD
+=======
+                // Mark today even though it's disabled
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
                 dayDiv.style.position = 'relative';
                 dayDiv.innerHTML = `${i}<span style="position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:5px;height:5px;background:#df5345;border-radius:50%;display:block;"></span>`;
                 dayDiv.title = 'Today (not available — 3 days advance required)';
             }
+<<<<<<< HEAD
         } else if (!dayActive) {
             // Day exists but admin has turned it off — show it greyed with a notice
             dayDiv.classList.add('disabled-date');
@@ -2067,6 +2081,8 @@ function renderCalendar(target) {
                     setTimeout(() => { hintEl.innerHTML = prev; }, 3000);
                 }
             };
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         } else {
             const sel = selectedDateObj[target];
             if (sel && sel.getDate() === i && sel.getMonth() === cm && sel.getFullYear() === cy) {

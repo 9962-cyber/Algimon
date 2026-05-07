@@ -84,8 +84,11 @@ function createStaff() {
             return;
         }
 
+<<<<<<< HEAD
         $tempPassword = AuthHelper::generateTempPassword();
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         $stmt = $db->prepare(
             "INSERT INTO staff (name, email, password_hash, phone, role, certifications, availability_days, first_login)
              VALUES (:name, :email, :pw, :phone, :role, :certs, :avail, 1)"
@@ -93,18 +96,26 @@ function createStaff() {
         $stmt->execute([
             ':name'  => $name,
             ':email' => $email,
+<<<<<<< HEAD
             ':pw'    => AuthHelper::hashPassword($tempPassword),
+=======
+            ':pw'    => AuthHelper::hashPassword('Algimon@123'),
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
             ':phone' => $phone,
             ':role'  => $role,
             ':certs' => json_encode($certs),
             ':avail' => json_encode($avail),
         ]);
 
+<<<<<<< HEAD
         $newId = (int)$db->lastInsertId();
 
         MailerHelper::sendStaffWelcomeEmail($email, $name, $tempPassword);
 
         ResponseHelper::success(['id' => $newId], "Staff member added", 201);
+=======
+        ResponseHelper::success(['id' => (int)$db->lastInsertId()], "Staff member added", 201);
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     } catch (PDOException $e) {
         ResponseHelper::error("Database error: " . $e->getMessage(), 500);
     }
@@ -134,6 +145,7 @@ function updateStaff($id) {
     if (empty($sets)) { ResponseHelper::error("No valid fields to update", 400); return; }
 
     try {
+<<<<<<< HEAD
         $db = (new Database())->getConnection();
 
         $chk = $db->prepare("SELECT id FROM staff WHERE id = :id");
@@ -171,6 +183,15 @@ function resetStaffPassword($id) {
         MailerHelper::sendStaffWelcomeEmail($staff['email'], $staff['name'], $tempPassword);
 
         ResponseHelper::success(null, "Password reset and sent to {$staff['email']}");
+=======
+        $db   = (new Database())->getConnection();
+        $stmt = $db->prepare("UPDATE staff SET " . implode(', ', $sets) . " WHERE id = :id");
+        if ($stmt->execute($params) && $stmt->rowCount() > 0) {
+            ResponseHelper::success(null, "Staff updated");
+        } else {
+            ResponseHelper::error("Staff member not found", 404);
+        }
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     } catch (PDOException $e) {
         ResponseHelper::error("Database error: " . $e->getMessage(), 500);
     }

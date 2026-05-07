@@ -23,7 +23,10 @@ $staff_id = $user['id'];
 function mapStatus($dbStatus) {
     $map = [
         'pending'     => 'Pending',
+<<<<<<< HEAD
         'confirmed'   => 'Approved',
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         'approved'    => 'Approved',
         'in-progress' => 'In Progress',
         'completed'   => 'Completed',

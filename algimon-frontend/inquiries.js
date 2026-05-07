@@ -6,11 +6,18 @@ class InquiriesManager {
         this.currentUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
         this.inquiries = [];
         this.activeTab = 'inquiries';
+<<<<<<< HEAD
         this.editingId       = null;
         this.quoteTargetId   = null;
         this.completeTargetId = null;
         this.staffList       = [];
         this.assigningId     = null;
+=======
+        this.editingId   = null;
+        this.quoteTargetId = null;
+        this.staffList   = [];
+        this.assigningId = null;
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         this.init();
     }
 
@@ -33,8 +40,11 @@ class InquiriesManager {
         document.getElementById('search-input').addEventListener('input', () => this.render());
         document.getElementById('status-filter').addEventListener('change', () => this.render());
         document.getElementById('industry-filter').addEventListener('change', () => this.render());
+<<<<<<< HEAD
         document.getElementById('date-from')?.addEventListener('change', () => this.render());
         document.getElementById('date-to')?.addEventListener('change', () => this.render());
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     }
 
     async loadInquiries() {
@@ -141,6 +151,7 @@ class InquiriesManager {
         const matchIndustry = !industry ||
             (inq.company || '').toLowerCase().includes(industry);
 
+<<<<<<< HEAD
         const dateFrom = document.getElementById('date-from')?.value;
         const dateTo   = document.getElementById('date-to')?.value;
         const reqDate  = inq.requestedDate ? inq.requestedDate.split('T')[0] : null;
@@ -148,6 +159,9 @@ class InquiriesManager {
         const matchDateTo   = !dateTo   || !reqDate || reqDate <= dateTo;
 
         return matchSearch && matchStatus && matchIndustry && matchDateFrom && matchDateTo;
+=======
+        return matchSearch && matchStatus && matchIndustry;
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     }
 
     buildCard(inq, isAppointmentTab = false) {
@@ -157,10 +171,14 @@ class InquiriesManager {
         // Status badge
         const badge = clone.querySelector('.inquiry-status-badge');
         badge.className = `inquiry-status-badge px-2.5 py-0.5 rounded-full text-xs font-semibold ${this.statusClass(inq.status)}`;
+<<<<<<< HEAD
         const statusLabel = inq.status === 'rescheduled'
             ? '↺ Rescheduled'
             : inq.status.charAt(0).toUpperCase() + inq.status.slice(1).replace('-', ' ');
         badge.textContent = statusLabel;
+=======
+        badge.textContent = inq.status.charAt(0).toUpperCase() + inq.status.slice(1).replace('-', '-');
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
 
         // Client info
         clone.querySelector('.inquiry-name').textContent    = inq.clientName || '—';
@@ -195,6 +213,7 @@ class InquiriesManager {
             clone.querySelector('.inquiry-staff-name').textContent = inq.staff_name;
         }
 
+<<<<<<< HEAD
         // Final amount and OR number (for completed)
         const finalRow = clone.querySelector('.inquiry-final-row');
         if (finalRow && (inq.actual_amount || inq.receipt_no)) {
@@ -211,6 +230,8 @@ class InquiriesManager {
             }
         }
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         // Cancel reason banner
         if (inq.status === 'cancelled' && inq.cancel_reason) {
             const banner = clone.querySelector('.inquiry-cancel-reason');
@@ -239,17 +260,34 @@ class InquiriesManager {
             class="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium flex items-center gap-1.5">
             <i class="fas fa-edit text-xs"></i> Edit</button>`;
 
+<<<<<<< HEAD
+=======
+        const deleteBtn = `<button type="button" onclick="deleteInquiry(event)"
+            class="px-3 py-2 bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium flex items-center justify-center">
+            <i class="fas fa-trash text-xs"></i></button>`;
+
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         const cancelBtn = `<button type="button" onclick="updateInquiryStatus(event,'cancelled')"
             class="px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium flex items-center gap-1">
             <i class="fas fa-times text-xs"></i> Cancel</button>`;
 
         if (isAppointmentTab) {
+<<<<<<< HEAD
             if (status === 'confirmed' || status === 'in-progress') {
                 const nextLabel  = status === 'confirmed' ? 'Mark In-Progress' : 'Mark Completed';
                 const nextStatus = status === 'confirmed' ? 'in-progress' : 'completed';
                 const nextIcon   = status === 'confirmed' ? 'fa-arrow-right' : 'fa-check-circle';
                 return `<button type="button" onclick="updateInquiryStatus(event,'${nextStatus}')"
                     class="action-btn flex-1 px-3 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
+=======
+            // Appointments tab: lean action set
+            if (status === 'confirmed' || status === 'in-progress') {
+                const nextLabel = status === 'confirmed' ? 'Mark In-Progress' : 'Mark Completed';
+                const nextStatus = status === 'confirmed' ? 'in-progress' : 'completed';
+                const nextIcon  = status === 'confirmed' ? 'fa-arrow-right' : 'fa-check-circle';
+                return `<button type="button" onclick="updateInquiryStatus(event,'${nextStatus}')"
+                    class="flex-1 px-3 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
                     <i class="fas ${nextIcon} text-xs"></i> ${nextLabel}</button>
                     ${cancelBtn}`;
             }
@@ -261,6 +299,7 @@ class InquiriesManager {
             case 'pending':
                 return `${editBtn}${assignBtn}
                     <button type="button" onclick="openQuoteModal(event)"
+<<<<<<< HEAD
                         class="action-btn flex-1 px-3 py-2 bg-[#2c0e0e] text-white rounded-lg hover:bg-[#4a1c1c] transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
                         <i class="fas fa-tag text-xs"></i> Set Quote & Confirm</button>
                     ${cancelBtn}`;
@@ -271,10 +310,16 @@ class InquiriesManager {
                         class="action-btn flex-1 px-3 py-2 bg-[#2c0e0e] text-white rounded-lg hover:bg-[#4a1c1c] transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
                         <i class="fas fa-tag text-xs"></i> Re-confirm & Quote</button>
                     ${cancelBtn}`;
+=======
+                        class="flex-1 px-3 py-2 bg-[#2c0e0e] text-white rounded-lg hover:bg-[#4a1c1c] transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
+                        <i class="fas fa-tag text-xs"></i> Set Quote & Confirm</button>
+                    ${cancelBtn}${deleteBtn}`;
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
 
             case 'confirmed':
                 return `${editBtn}${assignBtn}
                     <button type="button" onclick="updateInquiryStatus(event,'in-progress')"
+<<<<<<< HEAD
                         class="action-btn flex-1 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
                         <i class="fas fa-arrow-right text-xs"></i> Mark In-Progress</button>
                     ${cancelBtn}`;
@@ -288,26 +333,58 @@ class InquiriesManager {
 
             case 'completed':
                 return `${editBtn}`;
+=======
+                        class="flex-1 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
+                        <i class="fas fa-arrow-right text-xs"></i> Mark In-Progress</button>
+                    ${cancelBtn}${deleteBtn}`;
+
+            case 'in-progress':
+                return `${editBtn}${assignBtn}
+                    <button type="button" onclick="updateInquiryStatus(event,'completed')"
+                        class="flex-1 px-3 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
+                        <i class="fas fa-check-circle text-xs"></i> Mark Completed</button>
+                    ${cancelBtn}${deleteBtn}`;
+
+            case 'completed':
+                return `${editBtn}${deleteBtn}`;
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
 
             case 'cancelled':
                 return `${editBtn}
                     <button type="button" onclick="updateInquiryStatus(event,'pending')"
+<<<<<<< HEAD
                         class="action-btn flex-1 px-3 py-2 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
                         <i class="fas fa-undo text-xs"></i> Restore to Pending</button>`;
 
             default:
                 return `${editBtn}`;
+=======
+                        class="flex-1 px-3 py-2 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition-colors text-sm font-medium flex items-center justify-center gap-1.5">
+                        <i class="fas fa-undo text-xs"></i> Restore to Pending</button>
+                    ${deleteBtn}`;
+
+            default:
+                return `${editBtn}${deleteBtn}`;
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         }
     }
 
     statusClass(status) {
         return {
+<<<<<<< HEAD
             'pending':      'bg-yellow-100 text-yellow-700',
             'rescheduled':  'bg-purple-100 text-purple-700',
             'confirmed':    'bg-green-100 text-green-700',
             'in-progress':  'bg-blue-100 text-blue-700',
             'completed':    'bg-emerald-100 text-emerald-700',
             'cancelled':    'bg-red-100 text-red-600',
+=======
+            'pending':     'bg-yellow-100 text-yellow-700',
+            'confirmed':   'bg-green-100 text-green-700',
+            'in-progress': 'bg-blue-100 text-blue-700',
+            'completed':   'bg-emerald-100 text-emerald-700',
+            'cancelled':   'bg-red-100 text-red-600',
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         }[status] || 'bg-gray-100 text-gray-600';
     }
 
@@ -324,7 +401,10 @@ class InquiriesManager {
 
         document.getElementById('modal-title').textContent = 'Edit Inquiry';
         document.getElementById('inquiry-id').value         = id;
+<<<<<<< HEAD
         // Client personal fields are read-only — populated for reference only
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         document.getElementById('clientName').value         = inq.clientName    || '';
         document.getElementById('company').value            = inq.company       || '';
         document.getElementById('clientEmail').value        = inq.clientEmail   || '';
@@ -358,8 +438,17 @@ class InquiriesManager {
         const id = this.editingId;
         if (!id) return;
 
+<<<<<<< HEAD
         // Only send editable fields — client personal info (name/email/phone) is read-only
         const body = {
+=======
+        const body = {
+            clientName:    document.getElementById('clientName').value,
+            company:       document.getElementById('company').value,
+            clientEmail:   document.getElementById('clientEmail').value,
+            phone:         document.getElementById('phone').value,
+            address:       document.getElementById('address').value,
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
             serviceType:   document.getElementById('serviceType').value,
             requestedDate: document.getElementById('requestedDate').value,
             requestedTime: document.getElementById('requestedTime').value,
@@ -392,13 +481,20 @@ class InquiriesManager {
     openQuote(id) {
         const inq = this.inquiries.find(i => i._id == id);
         if (!inq) return;
+<<<<<<< HEAD
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         this.quoteTargetId = id;
 
         document.getElementById('qm-client').textContent   = inq.clientName;
         document.getElementById('qm-service').textContent  = inq.serviceType || '—';
         document.getElementById('qm-datetime').textContent =
+<<<<<<< HEAD
             `${this.fmtDate(inq.requestedDate)}  at  ${inq.requestedTime || '—'}`;
+=======
+            `${inq.requestedDate || '—'}  at  ${inq.requestedTime || '—'}`;
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         document.getElementById('quote-price').value = inq.price_estimate || '';
         document.getElementById('quote-notes').value  = '';
         document.getElementById('quote-price-error').classList.add('hidden');
@@ -454,10 +550,13 @@ class InquiriesManager {
         }
         document.getElementById('assign-staff-error').classList.add('hidden');
 
+<<<<<<< HEAD
         const btn   = document.querySelector('#assign-modal button[onclick="submitAssign()"]');
         const origHTML = btn ? btn.innerHTML : null;
         if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Assigning…'; }
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         const staff = this.staffList.find(s => s.id == staffId);
         const inq   = this.inquiries.find(i => i._id == id);
 
@@ -479,8 +578,11 @@ class InquiriesManager {
             }
         } catch (e) {
             this.showToast('Cannot connect to server.', 'error');
+<<<<<<< HEAD
         } finally {
             if (btn && origHTML) { btn.disabled = false; btn.innerHTML = origHTML; }
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         }
     }
 
@@ -495,10 +597,13 @@ class InquiriesManager {
         }
         document.getElementById('quote-price-error').classList.add('hidden');
 
+<<<<<<< HEAD
         const btn = document.querySelector('#quote-modal button[onclick="submitQuote()"]');
         const origHTML = btn ? btn.innerHTML : null;
         if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Confirming…'; }
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         try {
             const res = await fetch(`${API_BASE_URL}/inquiries/${id}`, {
                 method: 'PUT',
@@ -523,6 +628,7 @@ class InquiriesManager {
             }
         } catch (e) {
             this.showToast('Cannot connect to server.', 'error');
+<<<<<<< HEAD
         } finally {
             if (btn && origHTML) { btn.disabled = false; btn.innerHTML = origHTML; }
         }
@@ -586,6 +692,8 @@ class InquiriesManager {
             this.showToast('Cannot connect to server.', 'error');
         } finally {
             if (btn && origHTML) { btn.disabled = false; btn.innerHTML = origHTML; }
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         }
     }
 
@@ -630,12 +738,16 @@ window.submitQuote = function () {
 
 window.updateInquiryStatus = async function (e, newStatus) {
     e.preventDefault();
+<<<<<<< HEAD
     const btn = e.target.closest('button');
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     const id  = e.target.closest('.inquiry-card').getAttribute('data-id');
     const mgr = window.inquiriesManager;
     const inq = mgr.inquiries.find(i => i._id == id);
     const name = inq ? inq.clientName : 'this client';
 
+<<<<<<< HEAD
     function setLoading(loading) {
         if (!btn) return;
         if (loading) {
@@ -650,6 +762,9 @@ window.updateInquiryStatus = async function (e, newStatus) {
 
     async function doUpdate(body) {
         setLoading(true);
+=======
+    async function doUpdate(body) {
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         try {
             const res = await fetch(`${API_BASE_URL}/inquiries/${id}`, {
                 method: 'PUT',
@@ -664,11 +779,17 @@ window.updateInquiryStatus = async function (e, newStatus) {
                 await mgr.loadInquiries();
             } else {
                 mgr.showToast('Error updating status.', 'error');
+<<<<<<< HEAD
                 setLoading(false);
             }
         } catch (err) {
             mgr.showToast('Cannot connect to server.', 'error');
             setLoading(false);
+=======
+            }
+        } catch (err) {
+            mgr.showToast('Cannot connect to server.', 'error');
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         }
     }
 
@@ -679,6 +800,17 @@ window.updateInquiryStatus = async function (e, newStatus) {
             confirmText: 'Cancel Appointment',
             onConfirm: (reason) => doUpdate({ status: 'cancelled', cancel_reason: reason })
         });
+<<<<<<< HEAD
+=======
+    } else if (newStatus === 'completed') {
+        window.showConfirm({
+            title: 'Mark as Completed?',
+            message: `Confirm that the appointment for ${name} has been completed?`,
+            confirmText: 'Yes, Complete',
+            type: 'success',
+            onConfirm: () => doUpdate({ status: 'completed' })
+        });
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     } else if (newStatus === 'in-progress') {
         window.showConfirm({
             title: 'Mark as In-Progress?',
@@ -688,8 +820,14 @@ window.updateInquiryStatus = async function (e, newStatus) {
             onConfirm: () => doUpdate({ status: 'in-progress' })
         });
     } else {
+<<<<<<< HEAD
         await doUpdate({ status: newStatus });
         if (newStatus === 'pending') mgr.showToast('Inquiry restored to pending.', 'success');
+=======
+        // pending restore, no confirm needed
+        await doUpdate({ status: newStatus });
+        mgr.showToast('Inquiry restored to pending.', 'success');
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     }
 };
 
@@ -707,6 +845,7 @@ window.submitAssign = function () {
     window.inquiriesManager.submitAssign();
 };
 
+<<<<<<< HEAD
 window.adminMarkComplete = function (e) {
     e.preventDefault();
     const id = e.target.closest('.inquiry-card').getAttribute('data-id');
@@ -721,6 +860,8 @@ window.submitComplete = function () {
     window.inquiriesManager.submitComplete();
 };
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
 window.deleteInquiry = function (e) {
     e.preventDefault();
     const id  = e.target.closest('.inquiry-card').getAttribute('data-id');
@@ -778,11 +919,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === this) window.inquiriesManager.closeAssign();
     });
 
+<<<<<<< HEAD
     // Close complete modal on backdrop click
     document.getElementById('complete-modal')?.addEventListener('click', function (e) {
         if (e.target === this) window.inquiriesManager.closeCompleteModal();
     });
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     // Logout
     const logoutModal = document.getElementById('logoutModal');
     const showModal   = () => { logoutModal.classList.add('show'); document.body.style.overflow = 'hidden'; };
@@ -803,7 +947,10 @@ document.addEventListener('DOMContentLoaded', function () {
         window.inquiriesManager.closeEdit();
         window.inquiriesManager.closeQuote();
         window.inquiriesManager.closeAssign();
+<<<<<<< HEAD
         window.inquiriesManager.closeCompleteModal();
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     });
 });
 

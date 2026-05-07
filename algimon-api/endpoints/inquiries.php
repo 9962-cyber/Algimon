@@ -16,8 +16,11 @@ function formatInquiry($row) {
         'status'        => strtolower($row['STATUS'] ?? ''),
         'cancel_reason' => $row['cancel_reason'] ?? '',
         'price_estimate'=> $row['price_estimate'] ?? '',
+<<<<<<< HEAD
         'actual_amount' => $row['actual_amount'] ?? null,
         'receipt_no'    => $row['receipt_no'] ?? null,
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         'staff_id'      => $row['staff_id'] ? (int)$row['staff_id'] : null,
         'staff_name'    => $row['staff_name'] ?? '',
         'createdAt'     => $row['created_at'],
@@ -27,7 +30,11 @@ function formatInquiry($row) {
 
 $appointmentsQuery = "SELECT a.id, a.client_id, a.client_name, a.client_email, a.client_phone,
         a.service_type, a.appointment_date, a.appointment_time, a.STATUS,
+<<<<<<< HEAD
         a.price_estimate, a.actual_amount, a.receipt_no, a.cancel_reason, a.notes,
+=======
+        a.price_estimate, a.actual_amount, a.cancel_reason, a.notes,
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         a.staff_id, a.created_at, a.updated_at,
         p.name as property_name, p.address as property_address, p.property_type,
         s.name as staff_name
@@ -91,8 +98,11 @@ function updateInquiry($id) {
         'status'         => 'STATUS',
         'cancel_reason'  => 'cancel_reason',
         'price_estimate' => 'price_estimate',
+<<<<<<< HEAD
         'actual_amount'  => 'actual_amount',
         'receipt_no'     => 'receipt_no',
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
         'staff_id'       => 'staff_id',
         'staff_name'     => 'staff_name',
     ];

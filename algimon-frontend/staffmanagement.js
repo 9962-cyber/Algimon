@@ -141,10 +141,13 @@ class StaffManager {
                         class="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
                         <i class="fas fa-edit text-xs"></i>
                     </button>
+<<<<<<< HEAD
                     <button onclick="staffMgr.confirmResetPassword(${s.id}, '${this._esc(s.name)}')" title="Reset Password"
                         class="w-8 h-8 flex items-center justify-center rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors">
                         <i class="fas fa-key text-xs"></i>
                     </button>
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
                     <button onclick="staffMgr.confirmDelete(${s.id}, '${this._esc(s.name)}')" title="Delete"
                         class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
                         <i class="fas fa-trash text-xs"></i>
@@ -307,6 +310,7 @@ class StaffManager {
         }
     }
 
+<<<<<<< HEAD
     // ── RESET PASSWORD ────────────────────────────────────────────────────────
     confirmResetPassword(id, name) {
         window.showConfirm({
@@ -330,6 +334,8 @@ class StaffManager {
         }
     }
 
+=======
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     // ── DELETE ────────────────────────────────────────────────────────────────
     confirmDelete(id, name) {
         window.showConfirm({

@@ -342,6 +342,7 @@ const skeletonCards = `
             el.textContent = this.pieData[i] ? this.pieData[i].value : 0;
         });
 
+<<<<<<< HEAD
         document.getElementById('clients-served-text').textContent = `${confirmed + completed} this month`;
         this._loadBlockedDates();
     }
@@ -358,6 +359,10 @@ const skeletonCards = `
                 if (el) el.textContent = `${count} date${count !== 1 ? 's' : ''} unavailable`;
             }
         } catch { /* silent */ }
+=======
+        document.getElementById('blocked-dates-text').textContent  = `0 dates unavailable`;
+        document.getElementById('clients-served-text').textContent = `${confirmed + completed} this month`;
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     }
 
     updateCharts() {

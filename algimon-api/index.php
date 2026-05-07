@@ -307,12 +307,19 @@ elseif ($resource === 'audit-logs') {
 elseif ($resource === 'staff') {
     require_once 'endpoints/staff.php';
     $id = $parts[1] ?? null;
+<<<<<<< HEAD
     $action = $parts[2] ?? null;
     if ($_SERVER['REQUEST_METHOD'] === 'GET')                                                    { getStaffList(); }
     elseif ($_SERVER['REQUEST_METHOD'] === 'POST'   && !$id)                                     { createStaff(); }
     elseif ($_SERVER['REQUEST_METHOD'] === 'POST'   && $id && $action === 'reset-password')      { resetStaffPassword($id); }
     elseif ($_SERVER['REQUEST_METHOD'] === 'PUT'    && $id)                                      { updateStaff($id); }
     elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $id)                                      { deleteStaff($id); }
+=======
+    if ($_SERVER['REQUEST_METHOD'] === 'GET')              { getStaffList(); }
+    elseif ($_SERVER['REQUEST_METHOD'] === 'POST')         { createStaff(); }
+    elseif ($_SERVER['REQUEST_METHOD'] === 'PUT'    && $id){ updateStaff($id); }
+    elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $id){ deleteStaff($id); }
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
     else { ResponseHelper::error("Method not allowed", 405); }
 }
 

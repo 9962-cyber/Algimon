@@ -7,8 +7,13 @@
 require_once 'config/database.php';
 
 $name     = 'Admin User';
+<<<<<<< HEAD
 $email    = 'algimonfireprotectionservices@gmail.com';
 $password = 'Webtools26!';
+=======
+$email    = 'admin@algimon.com';
+$password = 'password';
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
 $role     = 'admin';
 $hash     = password_hash($password, PASSWORD_BCRYPT);
 

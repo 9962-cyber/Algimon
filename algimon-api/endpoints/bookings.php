@@ -242,7 +242,11 @@ function rescheduleBooking($id) {
 
     $time24 = date('H:i:s', strtotime($newTime));
 
+<<<<<<< HEAD
     $query = "UPDATE appointments SET appointment_date = :date, appointment_time = :time, status = 'rescheduled'
+=======
+    $query = "UPDATE appointments SET appointment_date = :date, appointment_time = :time, status = 'pending'
+>>>>>>> ba480c3877aa6c9ada883ba61e008d131871ea95
               WHERE id = :id AND client_id = :user_id AND status NOT IN ('completed', 'cancelled')";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':date', $newDate);
