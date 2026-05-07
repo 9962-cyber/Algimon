@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algimon Navbar Template</title>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Oswald:wght@400;500;700&family=Dancing+Script:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 2. CSS STYLES --- */
+
+        /* Variables & Reset */
+        :root {
+            --color-brand-red: #5e2121;
+            --color-brand-accent: #c94e32;
+            --color-brand-accent-hover: #e05e42;
+            --color-white: #ffffff;
+            --nav-height: 80px;
+            --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Open Sans', sans-serif; 
+            margin: 0; padding: 0;
+            background-color: #ffffff; 
+        }
+
+        h1, .nav-item, .nav-cta, .mobile-link {
+            font-family: 'Oswald', sans-serif;
+        }
+
+        /* Navbar (FIXED) */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100vw; height: var(--nav-height); z-index: 1000;
+            transition: all 0.4s ease;
+            background: var(--color-brand-red);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .navbar-accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; }
+        .navbar.is-top { background: #5e2121; height: 90px; box-shadow: none; }
+        .navbar.is-scrolled { background: rgba(94, 33, 33, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); height: 70px; }
+        
+        /* Full Width Container (Corners) */
+        .navbar-container {
+            width: 100%; 
+            max-width: 100%; 
+            padding: 0 30px; 
+            margin: 0;      
+            height: 100%;
+            display: flex; justify-content: space-between; align-items: center; position: relative;
+        }
+
+        /* Brand/Logo */
+        .brand-wrapper { display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; perspective: 1000px; }
+        .logo-icon {
+            width: 48px; height: 48px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-brand-red); font-size: 24px; transition: transform 0.4s var(--ease-elastic), box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;
+        }
+        .logo-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+        .brand-wrapper:hover .logo-icon { transform: scale(1.15) rotate(-5deg); box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+        .brand-text h1 {
+            font-weight: 700; font-size: 26px; color: var(--color-brand-accent);
+            line-height: 1; margin: 0; letter-spacing: 0.5px; transition: color 0.3s ease;
+        }
+        .brand-text span { font-size: 11px; text-transform: uppercase; color: rgba(255,255,255,0.8); letter-spacing: 1px; display: block; font-family: 'Open Sans', sans-serif; font-weight: 600; }
+        .brand-wrapper:hover .brand-text h1 { color: #ffffff; text-shadow: 0 0 10px rgba(201, 78, 50, 0.6); }
+
+        /* Desktop Nav Links */
+        .nav-links { display: flex; align-items: center; position: relative; }
+        .nav-item {
+            position: relative; padding: 0 25px; text-decoration: none; color: rgba(255,255,255,0.9);
+            font-weight: 500; text-transform: uppercase;
+            letter-spacing: 1px; font-size: 15px; transition: color 0.3s ease; display: flex; align-items: center; height: var(--nav-height); 
+        }
+        .nav-item:hover { color: #ffffff; }
+        .nav-divider { width: 1px; height: 20px; background-color: rgba(255,255,255,0.3); margin: 0 10px; }
+        .nav-indicator {
+            position: absolute; bottom: 20px; height: 3px; background-color: var(--color-brand-accent);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); border-radius: 4px; pointer-events: none; opacity: 0;
+            box-shadow: 0 0 10px var(--color-brand-accent);
+        }
+
+        .nav-cta {
+            margin-left: 20px; background: var(--color-brand-accent); color: white; border: none; padding: 12px 28px;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+            border-radius: 4px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nav-cta:hover { background: #e05e42; transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .nav-cta:active { transform: scale(0.95); }
+
+        /* Mobile Menu */
+        .mobile-toggle { display: none; background: none; border: none; color: white; font-size: 28px; cursor: pointer; padding: 8px; }
+        .mobile-menu { position: fixed; top: var(--nav-height); left: 0; width: 100%; background: var(--color-brand-red); overflow: hidden; max-height: 0; transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1); z-index: 999; }
+        .mobile-menu.is-open { max-height: 400px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .mobile-link { display: block; padding: 20px 30px; color: white; text-decoration: none; font-family: 'Oswald', sans-serif; font-size: 18px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s ease; }
+        .mobile-link:hover { background: rgba(0,0,0,0.2); padding-left: 40px; color: var(--color-brand-accent); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .navbar-container { padding: 0 20px; }
+        }
+        @media (max-width: 768px) {
+            .nav-links, .nav-divider { display: none; }
+            .mobile-toggle { display: block; }
+            .navbar.is-top { height: 70px; }
+            .navbar.is-scrolled { height: 60px; }
+            .mobile-menu { top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar" class="navbar is-top">
+        <div class="navbar-accent"></div>
+
+        <div class="navbar-container">
+            <a href="home.html" class="brand-wrapper">
+                <div class="logo-icon">
+                    <img src="images/algimonlogo.png" alt="Algimon Logo" /> 
+                </div>
+                <div class="brand-text">
+                    <h1>ALGIMON</h1>
+                    <span>Fire Protection Services</span>
+                </div>
+            </a>
+
+            <div class="nav-links">
+                <div id="nav-indicator" class="nav-indicator"></div>
+                
+                <a href="home.html" class="nav-item">Home</a>
+                <div class="nav-divider"></div>
+                
+                <a href="about.html" class="nav-item">About Us</a>
+                <div class="nav-divider"></div>
+                
+                <a href="service.html" class="nav-item">Services</a>
+                <div class="nav-divider"></div>
+                
+                <a href="appointment.html">
+                    <button class="nav-cta">Schedule Now</button>
+                </a>
+            </div>
+
+            <button id="mobile-toggle" class="mobile-toggle" aria-label="Toggle navigation menu">
+                <i class="ph ph-list"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div id="mobile-menu" class="mobile-menu">
+        <a href="home.html" class="mobile-link">Home</a>
+        <a href="about.html" class="mobile-link">About Us</a>
+        <a href="service.html" class="mobile-link">Services</a>
+        <a href="appointment.html" class="mobile-link">Schedule Appointment</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.getElementById('navbar');
+            const navIndicator = document.getElementById('nav-indicator');
+            const navItems = document.querySelectorAll('.nav-item');
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileIcon = mobileToggle.querySelector('i');
+
+            // 1. Sticky Header Logic
+            const handleScroll = () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.remove('is-top');
+                    navbar.classList.add('is-scrolled');
+                    if (window.innerWidth <= 768) mobileMenu.style.top = '60px';
+                } else {
+                    navbar.classList.add('is-top');
+                    navbar.classList.remove('is-scrolled');
+                    if (window.innerWidth <= 768) mobileMenu.style.top = '70px';
+                }
+            };
+            window.addEventListener('scroll', handleScroll);
+            handleScroll(); 
+
+            // 2. Sliding Indicator Logic
+            function moveIndicator(element) {
+                if (!element || window.innerWidth <= 768) return; 
+                const parentRect = element.parentElement.getBoundingClientRect();
+                const elementRect = element.getBoundingClientRect();
+                const left = elementRect.left - parentRect.left;
+                const width = elementRect.width;
+
+                navIndicator.style.width = `${width * 0.6}px`; 
+                navIndicator.style.transform = `translateX(${left + (width * 0.2)}px)`;
+                navIndicator.style.opacity = '1';
+            }
+            function hideIndicator() {
+                navIndicator.style.opacity = '0';
+                navIndicator.style.width = '0px';
+            }
+            navItems.forEach(item => {
+                item.addEventListener('mouseenter', (e) => moveIndicator(e.target));
+            });
+            document.querySelector('.nav-links').addEventListener('mouseleave', hideIndicator);
+
+            // 3. Mobile Menu Logic
+            let isMenuOpen = false;
+            mobileToggle.addEventListener('click', () => {
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    mobileMenu.classList.add('is-open');
+                    mobileIcon.classList.replace('ph-list', 'ph-x');
+                } else {
+                    mobileMenu.classList.remove('is-open');
+                    mobileIcon.classList.replace('ph-x', 'ph-list');
+                }
+            });
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    isMenuOpen = false;
+                    mobileMenu.classList.remove('is-open');
+                    mobileIcon.classList.replace('ph-x', 'ph-list');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

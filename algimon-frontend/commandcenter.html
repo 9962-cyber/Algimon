@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Algimon - Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="commandcenter.css">
+</head>
+<body class="text-gray-800 antialiased">
+
+    <!-- MOBILE TOP BAR -->
+    <div class="mobile-topbar md:hidden">
+        <button id="mobileMenuBtn" class="mobile-topbar-btn" aria-label="Open menu">
+            <i class="fas fa-bars text-sm"></i>
+        </button>
+        <span class="font-bold text-white text-sm tracking-tight">Algimon Admin</span>
+        <div style="width:36px"></div>
+    </div>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-[55] hidden md:hidden" onclick="closeSidebar()"></div>
+
+<aside class="fixed inset-y-0 left-0 w-64 bg-[#2c0e0e] text-white flex flex-col shadow-xl z-[60] transition-transform duration-300 transform -translate-x-full md:translate-x-0" id="sidebar">
+        <div class="p-4 mb-1 flex items-center border-b border-white/10 shrink-0">
+            <img src="images/algimonlogo.png" alt="Algimon Logo" class="w-16 h-16 mr-3 shrink-0 object-cover rounded-full">
+            <div><h1 class="font-bold text-md leading-tight">Algimon</h1><p class="text-xs text-white/60">Fire Protection Admin</p></div>
+        </div>
+        <nav class="flex-1 px-4 space-y-1 overflow-y-visible mt-2 pb-2">
+            <a href="commandcenter.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white bg-white/20 shadow-inner font-semibold transition-all duration-200 text-[13px]"><i class="fas fa-th-large w-5 text-center"></i><span>Command Center</span></a>
+            <a href="inquiries.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]"><i class="fas fa-envelope w-5 text-center"></i><span>Inquiries</span></a>
+            <!-- Staff Dropdown -->
+<div class="relative">
+    <button onclick="toggleStaffDropdown()" 
+            id="staff-dropdown-btn"
+            class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px] w-full text-left">
+        <i class="fas fa-users w-5 text-center"></i>
+        <span>Staff</span>
+        <i class="fas fa-chevron-down ml-auto text-[10px] transition-transform duration-200" id="staff-chevron"></i>
+    </button>
+    <div id="staff-submenu" class="hidden mt-1 space-y-1">
+        <a href="staffmanagement.html" 
+           class="flex items-center gap-3 pl-11 pr-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+            <i class="fas fa-user-cog w-5 text-center"></i>
+            <span>Staff Management</span>
+        </a>
+        <a href="staffattendance.html" 
+           class="flex items-center gap-3 pl-11 pr-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+            <i class="fas fa-clock w-5 text-center"></i>
+            <span>Staff Attendance</span>
+        </a>
+    </div>
+</div>
+            <a href="products.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]"><i class="fas fa-box w-5 text-center"></i><span>Products &amp; Equipment</span></a>
+            <a href="operation-rules.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]"><i class="fas fa-cog w-5 text-center"></i><span>Operation &amp; Rules</span></a>
+            <a href="performance.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]"><i class="far fa-file-alt w-5 text-center"></i><span>Performance Report</span></a>
+            <a href="audittrail.html" class="flex items-center gap-3 px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]"><i class="fas fa-shield-alt w-5 text-center"></i><span>Audit Trail</span></a>
+        </nav>
+        <div class="border-t border-white/10 bg-[#2c0e0e] p-3 shrink-0">
+            <div class="flex items-center gap-2">
+                <div id="user-avatar" class="w-7 h-7 bg-red-500 rounded-full flex items-center justify-center font-bold text-[10px] shrink-0">A</div>
+                <div class="flex-1 min-w-0">
+                    <p id="user-name" class="text-[11px] font-semibold text-white truncate">Admin User</p>
+                    <p id="user-email" class="text-[9px] text-white/50 truncate">admin@algimon.com</p>
+                </div>
+                <button id="logoutButton" class="shrink-0 flex items-center justify-center bg-red-700 hover:bg-red-800 text-white rounded-md p-1.5 transition-all duration-200"><i class="fas fa-sign-out-alt text-xs"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page title — hidden on mobile (shown in header instead) -->
+            <div class="mb-8 hidden md:block">
+                <p id="page-greeting" class="text-xs font-bold uppercase tracking-widest text-red-700 mb-1"></p>
+                <h1 class="text-3xl font-bold text-gray-800 mb-1">Command Center</h1>
+                <p class="text-gray-500 text-sm">Overview of fire protection service operations and bookings</p>
+            </div>
+
+            <!-- Mobile page title block (matches staff app style) -->
+    <div class="md:hidden mb-5">
+    <p id="mobile-greeting" class="text-xs font-semibold text-red-700 uppercase tracking-widest mb-1"></p>
+    <h1 class="text-2xl font-bold text-gray-900">Today's Appointments</h1>
+    <p class="text-sm text-gray-400 mt-0.5" id="mobile-date-line">April 25 — Manage active deployments and service reports.</p>
+             </div>  
+
+            <!-- Stats: 2-col on mobile, 4-col on desktop -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-8">
+                <div class="stat-card bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-start mb-2 md:mb-4">
+                        <span class="text-xs md:text-sm font-semibold text-orange-500 uppercase tracking-wide md:tracking-normal md:font-medium md:text-gray-500 md:normal-case">Pending</span>
+                        <div class="w-8 h-8 rounded-full bg-orange-50 items-center justify-center text-orange-400 hidden md:flex"><i class="fas fa-hourglass-half text-sm"></i></div>
+                    </div>
+                    <div class="text-3xl md:text-4xl font-bold text-gray-800" data-stat="pending">0</div>
+                    <p class="text-xs text-gray-400 mt-1 hidden md:block">Awaiting review</p>
+                </div>
+                <div class="stat-card bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-start mb-2 md:mb-4">
+                        <span class="text-xs md:text-sm font-semibold text-green-500 uppercase tracking-wide md:tracking-normal md:font-medium md:text-gray-500 md:normal-case">Approved</span>
+                        <div class="w-8 h-8 rounded-full bg-green-50 items-center justify-center text-green-500 hidden md:flex"><i class="fas fa-check-circle text-sm"></i></div>
+                    </div>
+                    <div class="text-3xl md:text-4xl font-bold text-gray-800" data-stat="confirmed">0</div>
+                    <p class="text-xs text-gray-400 mt-1 hidden md:block">Confirmed bookings</p>
+                </div>
+                <div class="stat-card bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-start mb-2 md:mb-4">
+                        <span class="text-xs md:text-sm font-semibold text-blue-500 uppercase tracking-wide md:tracking-normal md:font-medium md:text-gray-500 md:normal-case">In-Progress</span>
+                        <div class="w-8 h-8 rounded-full bg-blue-50 items-center justify-center text-blue-500 hidden md:flex"><i class="fas fa-spinner text-sm"></i></div>
+                    </div>
+                    <div class="text-3xl md:text-4xl font-bold text-gray-800" data-stat="in-progress">0</div>
+                    <p class="text-xs text-gray-400 mt-1 hidden md:block">Active services</p>
+                </div>
+                <div class="stat-card bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-start mb-2 md:mb-4">
+                        <span class="text-xs md:text-sm font-semibold text-red-400 uppercase tracking-wide md:tracking-normal md:font-medium md:text-gray-500 md:normal-case">Cancelled</span>
+                        <div class="w-8 h-8 rounded-full bg-red-50 items-center justify-center text-red-400 hidden md:flex"><i class="fas fa-calendar-times text-sm"></i></div>
+                    </div>
+                    <div class="text-3xl md:text-4xl font-bold text-gray-800" data-stat="cancelled">0</div>
+                    <p class="text-xs text-gray-400 mt-1 hidden md:block">Rejected or withdrawn</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+                <!-- Pie Chart Card -->
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-6">
+                    <div class="flex justify-between items-start mb-4 md:mb-5">
+                        <h2 class="text-sm md:text-base font-bold text-gray-800">Status Distribution</h2>
+                        <span id="pie-filter-label" class="text-xs text-gray-400 hidden">Click slice to filter</span>
+                    </div>
+                    <div class="flex items-center gap-6 flex-wrap md:flex-nowrap">
+                        <div class="pie-chart-container shrink-0">
+                            <canvas id="pieChart" width="200" height="200"></canvas>
+                        </div>
+                        <div class="space-y-1 flex-1" id="pie-legend">
+                            <div class="legend-item" data-index="0" onclick="togglePieSlice(0)"><span class="w-3 h-3 rounded-full bg-orange-400 shrink-0"></span><span class="text-sm text-gray-600 flex-1">Pending</span><span class="text-sm font-semibold text-gray-800 min-w-[2rem] text-right" data-legend-count="0">0</span></div>
+                            <div class="legend-item" data-index="1" onclick="togglePieSlice(1)"><span class="w-3 h-3 rounded-full bg-green-500 shrink-0"></span><span class="text-sm text-gray-600 flex-1">Confirmed</span><span class="text-sm font-semibold text-gray-800 min-w-[2rem] text-right" data-legend-count="1">0</span></div>
+                            <div class="legend-item" data-index="2" onclick="togglePieSlice(2)"><span class="w-3 h-3 rounded-full bg-blue-500 shrink-0"></span><span class="text-sm text-gray-600 flex-1">In-Progress</span><span class="text-sm font-semibold text-gray-800 min-w-[2rem] text-right" data-legend-count="2">0</span></div>
+                            <div class="legend-item" data-index="3" onclick="togglePieSlice(3)"><span class="w-3 h-3 rounded-full bg-emerald-500 shrink-0"></span><span class="text-sm text-gray-600 flex-1">Completed</span><span class="text-sm font-semibold text-gray-800 min-w-[2rem] text-right" data-legend-count="3">0</span></div>
+                            <div class="legend-item" data-index="4" onclick="togglePieSlice(4)"><span class="w-3 h-3 rounded-full bg-red-400 shrink-0"></span><span class="text-sm text-gray-600 flex-1">Cancelled</span><span class="text-sm font-semibold text-gray-800 min-w-[2rem] text-right" data-legend-count="4">0</span></div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4 pt-3 border-t border-gray-50">💡 Hover or click slices to explore</p>
+                </div>
+
+                <!-- Bar Chart Card -->
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-6">
+                    <div class="flex justify-between items-start mb-4 md:mb-5 flex-wrap gap-2">
+                        <h2 class="text-sm md:text-base font-bold text-gray-800">Client Industry Breakdown</h2>
+                        <div class="flex gap-2">
+                            <button class="bar-period-btn active text-xs px-3 py-1 rounded-full font-semibold" data-period="month" onclick="setBarPeriod('month')">This Month</button>
+                            <button class="bar-period-btn text-xs px-3 py-1 rounded-full font-semibold" data-period="quarter" onclick="setBarPeriod('quarter')">Last 3 Months</button>
+                            <button class="bar-period-btn text-xs px-3 py-1 rounded-full font-semibold" data-period="year" onclick="setBarPeriod('year')">All Time</button>
+                        </div>
+                    </div>
+                    <div class="relative" style="height: 180px;">
+                        <canvas id="barChart" width="400" height="180"></canvas>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-[#2c0e0e] shrink-0"></span><span class="text-xs text-gray-500">Number of Clients</span></div>
+                        <p class="text-xs text-gray-400">💡 Hover bars for details</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointments + Inquiries lists -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-6">
+                    <div class="flex justify-between items-center mb-3 md:mb-4">
+                        <h2 class="text-sm md:text-base font-bold text-gray-800">Upcoming Appointments</h2>
+                        <a href="inquiries.html" class="text-xs md:text-sm text-red-700 font-semibold hover:text-red-800 transition-colors">View All</a>
+                    </div>
+                    <!-- Mobile search (matches staff app) -->
+                    <div class="md:hidden mb-3 relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+                        <input type="text" placeholder="Search customer..." class="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm text-gray-600 focus:outline-none">
+                    </div>
+                    <!-- Mobile filter pill (matches staff app) -->
+                    <div class="md:hidden mb-3">
+                        <div class="flex items-center justify-between border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-500 bg-white">
+                            <span>Default (Active)</span>
+                            <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                        </div>
+                    </div>
+                    <!-- Column headers on mobile -->
+                    <div class="md:hidden flex justify-between text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-1 mb-1">
+                        <span>Customer Name</span>
+                        <span>Schedule Date</span>
+                    </div>
+                    <div id="appointments-list"></div>
+                </div>
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-6">
+                    <div class="flex justify-between items-center mb-3 md:mb-4">
+                        <h2 class="text-sm md:text-base font-bold text-gray-800">Recent Inquiries</h2>
+                        <a href="inquiries.html" class="text-xs md:text-sm text-red-700 font-semibold hover:text-red-800 transition-colors">View All</a>
+                    </div>
+                    <div id="inquiries-list"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-6"><h2 class="text-sm md:text-base font-bold text-gray-800 mb-4">Operations Status</h2><div class="ops-item ops-blue"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-calendar-alt text-sm"></i></div><div><p class="text-sm font-semibold text-gray-800">Active Business Days</p><p class="text-xs text-gray-500">5 days per week</p></div></div><a href="operation-rules.html" class="text-sm font-semibold text-blue-600 hover:text-blue-700">Manage</a></div><div class="ops-item ops-orange"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 shrink-0"><i class="fas fa-ban text-sm"></i></div><div><p class="text-sm font-semibold text-gray-800">Blocked Dates</p><p class="text-xs text-gray-500" id="blocked-dates-text">0 dates unavailable</p></div></div><a href="operation-rules.html" class="text-sm font-semibold text-orange-600 hover:text-orange-700">View</a></div><div class="ops-item ops-green"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-500 shrink-0"><i class="fas fa-user-check text-sm"></i></div><div><p class="text-sm font-semibold text-gray-800">Total Clients Served</p><p class="text-xs text-gray-500" id="clients-served-text">0 this month</p></div></div><a href="performance.html" class="text-sm font-semibold text-green-600 hover:text-green-700">Report</a></div></div>
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 md:p-6"><h2 class="text-sm md:text-base font-bold text-gray-800 mb-4">Quick Actions</h2><div class="grid grid-cols-1 gap-3"><a href="inquiries.html" class="qa-btn qa-btn-red">View All Inquiries</a><a href="operation-rules.html" class="qa-btn qa-btn-blue">Manage Time Slots</a><a href="staffmanagement.html" class="qa-btn qa-btn-dark">Manage Staff</a><a href="operation-rules.html" class="qa-btn qa-btn-orange">Block Dates</a><a href="performance.html" class="qa-btn qa-btn-teal">Generate Report</a></div></div>
+            </div>
+        </div>
+    </main>
+
+    <div id="chart-tooltip" class="chart-tooltip"></div>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] modal-transition" onclick="handleModalBackdrop(event)">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4" onclick="event.stopPropagation()">
+            <div class="p-5 text-center">
+                <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3"><i class="fas fa-sign-out-alt text-red-600 text-xl"></i></div>
+                <h3 class="text-lg font-bold text-gray-800 mb-1">Ready to leave?</h3>
+                <p class="text-gray-500 text-xs mb-5">Are you sure you want to logout?</p>
+                <div class="flex gap-2">
+                    <button id="cancelLogoutBtn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg text-sm">Cancel</button>
+                    <button id="confirmLogoutBtn" class="flex-1 bg-red-700 hover:bg-red-800 text-white font-semibold py-2 rounded-lg text-sm shadow-md">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="audit-logger.js?v=3"></script>
+    <script src="commandcenter.js"></script>
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('mobileMenuBtn').addEventListener('click', openSidebar);
+        document.querySelectorAll('#sidebar nav a').forEach(function(a) {
+            a.addEventListener('click', function() {
+                if (window.innerWidth < 768) closeSidebar();
+            });
+        });
+    </script>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-[300] pointer-events-none"
+         style="min-width:280px;max-width:90vw;">
+        <div id="toast-inner"
+             class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-sm font-medium
+                    translate-y-4 opacity-0 transition-all duration-300 bg-gray-900 text-white">
+            <i id="toast-icon" class="fas fa-info-circle text-blue-400 shrink-0"></i>
+            <span id="toast-message">Message</span>
+        </div>
+    </div>
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="scrollToTop()" aria-label="Back to top"
+        class="fixed bottom-6 right-6 z-[90] w-11 h-11 bg-[#2c0e0e] text-white rounded-full shadow-lg
+               flex items-center justify-center opacity-0 pointer-events-none
+               transition-all duration-300 md:bottom-8 md:right-8 hover:bg-[#4a1c1c]">
+        <i class="fas fa-chevron-up text-sm"></i>
+    </button>
+</body>
+</html>

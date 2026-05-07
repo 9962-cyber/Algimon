@@ -1,0 +1,147 @@
+/* inquiries.css - Fixed whitespace on right side */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F8F9FA;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
+
+/* MAIN LAYOUT FIX: removes right-side gap */
+.main-content {
+    margin-left: 256px;
+    padding: 2rem;
+    min-height: 100vh;
+    width: calc(100% - 256px);
+    max-width: 100%;
+    transition: all 0.2s ease;
+}
+
+/* Inner container: proper width without empty right margin */
+.main-content > div {
+    max-width: 100%;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Cards and content naturally fill available space */
+.inquiry-card {
+    width: 100%;
+}
+
+/* Responsive breakpoint — sidebar hidden, main takes full width */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+        padding-top: calc(52px + 1rem);
+        
+        width: 100%;
+    }
+}
+
+/* Modal transitions */
+.modal-transition {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#logoutModal {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#logoutModal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hide scrollbar on sidebar nav */
+#sidebar nav {
+    overflow-y: visible !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#sidebar nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* Toast notification */
+#toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Filter group responsiveness */
+.filter-group {
+    flex-wrap: wrap;
+}
+
+/* Ensure full width utilization without overflow */
+.max-w-5xl {
+    max-width: 100%;
+}
+
+/* ── MOBILE TOP BAR ── */
+.mobile-topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 52px;
+    background: #2c0e0e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    z-index: 50;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+}
+.mobile-topbar-btn {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.12);
+    border: none; border-radius: 8px;
+    color: white; font-size: 15px;
+    cursor: pointer;
+}
+
+/* ── BACK TO TOP ── */
+#backToTop.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ── TOAST ── */
+#toast-inner.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+#toast-inner.toast-success { background: #14532d; }
+#toast-inner.toast-error   { background: #7f1d1d; }
+#toast-inner.toast-warning { background: #78350f; }
+#toast-inner.toast-info    { background: #1e3a5f; }
+
+/* Loading Skeletons - Add to the bottom of each CSS file */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-text { height: 16px; margin: 8px 0; }
+.skeleton-title { height: 24px; width: 60%; margin-bottom: 12px; }
+.skeleton-card { height: 120px; border-radius: 12px; }
+.skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; }
+.skeleton-button { height: 36px; width: 100px; border-radius: 8px; }

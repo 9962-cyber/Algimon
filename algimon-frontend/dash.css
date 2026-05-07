@@ -1,0 +1,153 @@
+/* Sidebar Brand Background */
+.sidebar { 
+    background-color: #3d1a1a; 
+}
+
+/* Page Background */
+.bg-main { 
+    background-color: #fcfcfc; 
+}
+
+/* Brand Text Color */
+.text-algimon { 
+    color: #8b4513; 
+}
+
+/* Status Indicators */
+.status-dot { 
+    width: 10px; 
+    height: 10px; 
+    border-radius: 50%; 
+    display: inline-block; 
+    flex-shrink: 0; 
+}
+
+/* Sidebar Status Menu */
+#statusMenu { 
+    background-color: #4d2626; 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+}
+
+/* Table Interaction */
+.table-row-hover:hover { 
+    background-color: #f9f9f9; 
+    cursor: pointer; 
+}
+
+.locked-row { 
+    cursor: not-allowed; 
+    opacity: 0.8; 
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { 
+    width: 8px; 
+}
+
+::-webkit-scrollbar-track { 
+    background: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb { 
+    background: #3d1a1a; 
+    border-radius: 10px; 
+}
+
+/* Animation for Chevron in Table */
+.chevron-rotate { 
+    transition: transform 0.3s ease; 
+}
+
+.rotate-90 { 
+    transform: rotate(90deg); 
+}
+
+/* Logout Modal Animation */
+.modal-transition {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#logoutModal {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#logoutModal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+
+        /* Smooth transition for sidebar and main content */
+        #sidebar { transition: transform 0.3s ease-in-out; }
+        main { transition: margin-left 0.3s ease-in-out; }
+        
+        /* Table responsiveness fix */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+/* Remove sidebar scrollbar like reference */
+#sidebar nav {
+    overflow-y: visible !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#sidebar nav::-webkit-scrollbar {
+    display: none;
+}
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; }
+        .main-content { margin-left: 256px; padding: 2rem; min-height: 100vh; }
+        @media (max-width: 768px) { .main-content { margin-left: 0; padding: 1rem; } }
+
+/* Mobile: table cells */
+@media (max-width: 640px) {
+    /* Reduce table cell padding on very small screens */
+    #appointment-table-body tr td,
+    table thead th {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Stack date + time vertically on small screens */
+    .appt-time-badge {
+        display: block;
+        margin-left: 0;
+        margin-top: 2px;
+    }
+
+    /* Prevent detail row from overflowing table bounds */
+    #appointment-table-body tr[id^="details-"] td {
+        overflow: hidden;
+        word-break: break-word;
+    }
+}
+
+/* Ensure modals don't overflow viewport on small phones */
+@media (max-width: 480px) {
+    #paymentModal > div,
+    #completionSummaryModal > div,
+    #cancelModal > div,
+    #rescheduleModal > div {
+        margin: 0;
+    }
+}
+
+/* Ensure the modal uses your existing transition logic */
+#passwordModal.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Modal specific tweaks to match your image */
+#passwordModal .modal-content {
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+}
+
+#passwordModal.show .modal-content {
+    transform: scale(1);
+}

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algimon Projects Carousel</title>
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Oswald:wght@400;500;700&family=Dancing+Script:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="about.css">
+</head>
+<body>
+
+    <!-- NAVBAR (MATCHING HOME.HTML EXACTLY) -->
+    <nav id="navbar" class="navbar is-top">
+        <div class="navbar-container">
+            <a href="home.html" class="brand-wrapper">
+                <div class="logo-icon">
+                    <img src="images/algimonlogo.png" alt="Algimon Logo" /> 
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">ALGIMON</span>
+                    <span>Fire Protection Services</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="home.html" class="nav-item">Home</a>
+                <div class="nav-divider"></div>
+                <a href="about.html" class="nav-item">About Us</a>
+                <div class="nav-divider"></div>
+                <a href="service.html" class="nav-item">Services</a>
+                <div class="nav-divider"></div>
+                
+                <a href="login.html">
+                    <button class="nav-cta">Schedule Now</button>
+                </a>
+            </div>
+            <button id="mobile-toggle" class="mobile-toggle">
+                <i class="ph ph-list"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU (MATCHING HOME.HTML EXACTLY) -->
+    <div id="mobile-menu" class="mobile-menu">
+        <a href="home.html" class="mobile-link">Home</a> 
+        <a href="about.html" class="mobile-link">About Us</a> 
+        <a href="service.html" class="mobile-link">Services</a>
+        <a href="login.html" class="mobile-link">Schedule Appointment</a>
+    </div>
+
+    <main>
+        <!-- 1. HISTORY SECTION -->
+        <section id="about" class="section-history">
+            <div class="container history-content">
+                <div class="history-image-wrapper">
+                    <img src="images/aboutus.png" alt="Construction workers installing fire protection systems" width="450" height="400" loading="lazy" class="history-image">
+                </div>
+                <div class="history-text">
+                    <p class="about-us">About Us</p>
+                    <h1 class="history-title">Our History and Commitment</h1>
+                    <p class="history-subtitle">From humble beginnings to a trusted name in fire protection and auxiliary systems.</p>
+                    <div class="divider"></div>
+                    <p class="history-body">
+                        Algimon Fire Protection Services (AFPS), formerly Altheoc's Trading, is a trusted provider of Fire Protection and Auxiliary Systems since 2008. Established as a sole proprietorship in 2020, AFPS specializes in the supply, installation, and maintenance of Automatic Sprinkler and Fire Alarm Detection Systems, serving well-known clients across various industries.
+                    </p>
+                    <div class="history-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">12+</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">30+</span>
+                            <span class="stat-label">Projects Done</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Client Satisfaction</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PROJECTS SECTION -->
+        <section class="section-projects">
+            <div class="container">
+                <h2 class="section-title projects-title">Recent Project Excellence</h2>
+                <p class="section-subtitle">Trusted by leading hospitals, government agencies, and industrial facilities</p>
+
+                <h3 class="projects-subheader completed">Completed Projects</h3>
+                <div class="carousel-container" id="carousel-projects">
+                    <div class="carousel-content-wrapper">
+                        <div class="carousel-track" id="track-projects">
+                            <div class="carousel-item">
+                                <img src="images/JECSONS HOSPITAL.jpg" alt="JECSONS HOSPITAL project site" loading="lazy">
+                                <h4 class="project-name">JECSONS HOSPITAL</h4>
+                                <p class="project-details">Tarlac City, Tarlac - Fire Alarm System</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/REGION I MEDICAL CENTER.png" alt="REGION I MEDICAL CENTER project site" loading="lazy">
+                                <h4 class="project-name">REGION I MEDICAL CENTER</h4>
+                                <p class="project-details">Dagupan, Pangasinan - Fire Alarm System</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/EAST AVE. MEDICAL CENTER.png" alt="EAST AVE. MEDICAL CENTER project site" loading="lazy">
+                                <h4 class="project-name">EAST AVE. MEDICAL CENTER</h4>
+                                <p class="project-details">Quezon City - Fire/Sprinkler/Auxiliary</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/LAS PINAS GENERAL HOSPITAL.png" alt="LAS PINAS GENERAL HOSPITAL project site" loading="lazy">
+                                <h4 class="project-name">LAS PINAS GENERAL HOSPITAL</h4>
+                                <p class="project-details">Las Pinas City - Fire Protection/FM 200</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/MAGAT DAM  ABOITZ POWER.png" alt="MAGAT DAM / ABOITZ POWER project site" loading="lazy">
+                                <h4 class="project-name">MAGAT DAM / ABOITZ POWER</h4>
+                                <p class="project-details">Ramon, Isabella - Fire Alarm Systems</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/CLARK DEVELOPMENT CORP.png" alt="CLARK DEVELOPMENT CORP. project site" loading="lazy">
+                                <h4 class="project-name">CLARK DEVELOPMENT CORP.</h4>
+                                <p class="project-details">San Fernando, Pampanga - Fire Alarm</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/JOSE R. REYES MEMORIAL HOSPITAL.png" alt="JOSE R. REYES MEMORIAL HOSPITAL project site" loading="lazy">
+                                <h4 class="project-name">JOSE R. REYES MEMORIAL HOSPITAL</h4>
+                                <p class="project-details">Sta.Cruz, Manila - Fire Alarm System</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/SAMSUNG PHILIPPINES.png" alt="SAMSUNG PHILIPPINES project site" loading="lazy">
+                                <h4 class="project-name">SAMSUNG PHILIPPINES</h4>
+                                <p class="project-details">Baleen, Laguna - Fire Alarm System</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/IRRI.png" alt="INTERNATIONAL RICE RESEARCH INSTITUTE project site" loading="lazy">
+                                <h4 class="project-name">IRRI</h4>
+                                <p class="project-details">Los Banos, Laguna - Fire Alarm System</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-button prev-button" data-carousel="projects">
+                        <i class="ph ph-caret-left"></i>
+                    </button>
+                    <button class="carousel-button next-button" data-carousel="projects">
+                        <i class="ph ph-caret-right"></i>
+                    </button>
+                </div>
+
+                <h3 class="projects-subheader ongoing">Ongoing Projects</h3>
+                <div class="carousel-container" id="carousel-ongoing">
+                    <div class="carousel-content-wrapper">
+                        <div class="carousel-track" id="track-ongoing">
+                            <div class="carousel-item">
+                                <img src="images/VICENTE SOTTO MEMORIAL HOSPITAL.png" alt="VICENTE SOTTO MEMORIAL HOSPITAL ongoing project" loading="lazy">
+                                <h4 class="project-name">VICENTE SOTTO MEMORIAL HOSPITAL</h4>
+                                <p class="project-details">Cebu City - Fire/Auxiliary Systems</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/VETERANS MEMORIAL HOSPITAL.png" alt="VETERANS MEMORIAL HOSPITAL ongoing project" loading="lazy">
+                                <h4 class="project-name">VETERANS MEMORIAL HOSPITAL</h4>
+                                <p class="project-details">Nueva Vizcaya - Fire Alarm/Pump</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/LAS PINAS GENERAL HOSPITAL.png" alt="LAS PINAS GENERAL HOSPITAL ongoing project" loading="lazy">
+                                <h4 class="project-name">LAS PINAS GENERAL HOSPITAL</h4>
+                                <p class="project-details">Las Pinas - Fire Alarm/Sprinkler</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/DRA. OLIVIA SALAMANCA HOSPITAL.png" alt="DRA. OLIVIA SALAMANCA HOSPITAL ongoing project" loading="lazy">
+                                <h4 class="project-name">DRA. OLIVIA SALAMANCA HOSPITAL</h4>
+                                <p class="project-details">Cavite City - Complete System Package</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/PRIMEWATER INC.png" alt="PRIMEWATER INC. ongoing project" loading="lazy">
+                                <h4 class="project-name">PRIMEWATER INC.</h4>
+                                <p class="project-details">Tarlac City - Fire Alarm System</p>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/EAST AVE. MEDICAL CENTER.png" alt="EAST AVE. MEDICAL CENTER ongoing project" loading="lazy">
+                                <h4 class="project-name">EAST AVE. MEDICAL CENTER</h4>
+                                <p class="project-details">Quezon City (ER & OPD) - Fire/Auxiliary</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-button prev-button" data-carousel="ongoing">
+                        <i class="ph ph-caret-left"></i>
+                    </button>
+                    <button class="carousel-button next-button" data-carousel="ongoing">
+                        <i class="ph ph-caret-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TRUSTED BY SECTION -->
+        <section class="section-trusted-by">
+            <div class="container">
+                <div class="trusted-box">
+                    <h2 class="trusted-by-title">TRUSTED BY OUR CLIENTS</h2> 
+                    <div class="logo-grid-frame">
+                        <div class="logo-grid" role="list">
+                            <div class="logo-grid-item">
+                                <img src="images/eastavenuemedcenter.png"  alt="Client Logo 1 - Hospital Emblem" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/laspinasgenhospital.png"  alt="Client Logo 2 - Government Seal" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/josereyesmedcenter.png"  alt="Client Logo 3 - Construction Firm" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/dr.paulinomedcenter.png"  alt="Client Logo 4 - Power Company" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/region1medcenter.png"  alt="Client Logo 5 - Tech Manufacturer" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/jecsonmedcenter.png"  alt="Client Logo 6 - Research Institute" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/quirinomedcenter.png"  alt="Client Logo 7 - Water Utility" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/rizalmedicalcenter.png"  alt="Client Logo 8 - Medical Center" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/clark.png"  alt="Client Logo 9 - Corporate Office" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/samsung.png"  alt="Client Logo 10 - Logistics" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/dost.png"  alt="Client Logo 11 - Engineering" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/dagupanvillaflorhospital.png"  alt="Client Logo 12 - Educational" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/aboitiz.png"  alt="Client Logo 13 - Retail Brand" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/intriceresearchinstitute.png"  alt="Client Logo 14 - Public Works" />
+                            </div>
+                            <div class="logo-grid-item">
+                                <img src="images/sensient.png" alt="Client Logo 15 - Industrial" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <hr class="section-break-line">
+        </div>
+
+        <!-- 4. REFERENCES SECTION -->
+        <section class="section-references">
+            <div class="container"> 
+                <h2 class="references-title">Our Valued References</h2>
+                <p class="references-subtitle">We are grateful for the trust and collaboration of our partners.</p>
+                <div class="reference-table-wrapper">
+                    <table class="reference-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Position</th>
+                                <th scope="col">Company / Affiliation</th>
+                                <th scope="col">Contact No.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Name">Carlos C. Barcelona</td>
+                                <td data-label="Position">Pres. & Owner</td>
+                                <td data-label="Company">New C.C. Barcelona Const.</td>
+                                <td data-label="Contact No." class="highlight-contact">02-82539710</td> 
+                            </tr>
+                            <tr>
+                                <td data-label="Name">Vicente P. Villaflor</td>
+                                <td data-label="Position">Director for Finance</td>
+                                <td data-label="Company">Dagupan Doctors Villaflor Hospital</td>
+                                <td data-label="Contact No." class="highlight-contact">075-522-7629</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Name">Pablo L. Juan</td>
+                                <td data-label="Position">Pres. & Owner</td>
+                                <td data-label="Company">PLJ Construction</td>
+                                <td data-label="Contact No." class="highlight-contact">0956-804-6450</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Name">Teddy B. Gementiza</td>
+                                <td data-label="Position">Pres. & Owner</td>
+                                <td data-label="Company">TBG Electro-Mechanical Services</td>
+                                <td data-label="Contact No." class="highlight-contact">09177135396</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Name">Janessa Maligaya</td>
+                                <td data-label="Position">V.P. Operations</td>
+                                <td data-label="Company">J.M. Maligaya Construction</td>
+                                <td data-label="Contact No." class="highlight-contact">09318762201</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- FOOTER SECTION -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Algimon Fire Protection Services</h3>
+                    <p>Professional fire protection and safety systems for commercial and industrial applications.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Information</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <i class="fa-solid fa-phone"></i>
+                            <div><a href="tel:0285223027">(02) 852 23027</a></div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-mobile-screen"></i>
+                            <div>
+                                <a href="tel:09683036533">0968-3036533</a> / 
+                                <a href="tel:09668958400">0966-8958400</a>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-envelope"></i>
+                            <a href="mailto:leo.saquilayan@gmail.com">leo.saquilayan@gmail.com</a>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-location-dot"></i>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Block+5+Lot+10B+Cardinal+Crossing+St+Baybreeze+Executive+Village+Wawa+Taguig+City" target="_blank">
+                                Block 5 Lot 10B Cardinal Crossing St. Baybreeze Executive Village, Wawa Taguig City
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="service.html">Services</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="index.html">Home</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-logo-col">
+                    <img src="images/algimonlogo.png" alt="Algimon Logo" class="footer-logo">
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Algimon Fire Protection Services. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT LOGIC (Matches the code you provided precisely) -->
+    <script src="about.js"></script>
+</body>
+</html>

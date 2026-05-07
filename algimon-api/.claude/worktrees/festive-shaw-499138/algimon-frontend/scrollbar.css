@@ -1,0 +1,36 @@
+/* 
+   ALGIMON GLOBAL SCROLLBAR STYLES */
+
+/* 1. Essential Variables 
+    */
+:root {
+    --sb-track-color: #f0f0f0;
+    --sb-thumb-color: #5e2121; /* Brand Red */
+    --sb-thumb-hover: #c94e32; /* Brand Accent */
+}
+
+/* 2. Chrome, Edge, and Safari (Webkit) */
+::-webkit-scrollbar {
+    width: 14px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--sb-thumb-color);
+    border-radius: 7px;
+    border: 3px solid var(--sb-track-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--sb-thumb-hover);
+}
+
+/* 3. Firefox */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    scroll-behavior: smooth; 
+}

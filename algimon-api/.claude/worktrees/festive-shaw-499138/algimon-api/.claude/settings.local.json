@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ' *)",
+      "Bash(python3 -c ' *)",
+      "Bash(unzip -o ALGIMON.docx -d /tmp/algimon_docx)",
+      "Read(//tmp/algimon_docx/word/**)",
+      "Bash(php -r ' *)",
+      "Bash(curl -s \"http://localhost/algimon-api/inquiries\")",
+      "Bash(curl -s http://localhost/algimon-api/inquiries -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Nzc3MzAyNDEsImV4cCI6MTc3ODMzNTA0MSwidXNlcl9pZCI6IjEiLCJlbWFpbCI6ImFkbWluQGFsZ2ltb24uY29tIiwidXNlcl90eXBlIjoiYWRtaW4ifQ.ZbZLhiUR4z4qDAdiYYwlaaHKTjAdBCrIE36bkNoAy_o')",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(mysql -u root -e \"DESCRIBE algimon.appointments;\")",
+      "Bash(mysql -u root --password=\"\" -e \"DESCRIBE algimon.appointments;\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root --password=\"\" -e \"DESCRIBE algimon.appointments;\" 2>$null)",
+      "PowerShell($body = '{\"email\":\"admin@algimon.com\",\"password\":\"Admin@123\"}'; $r = Invoke-WebRequest -Uri \"http://localhost/algimon-api/auth/login\" -Method POST -Body $body -ContentType \"application/json\" -UseBasicParsing 2>&1; $r.Content)",
+      "PowerShell($token = \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Nzc3MzI0MDAsImV4cCI6MTc3ODMzNzIwMCwidXNlcl9pZCI6IjEiLCJlbWFpbCI6ImFkbWluQGFsZ2ltb24uY29tIiwidXNlcl90eXBlIjoiYWRtaW4ifQ.t1t_cz5ZBDRZVjLXZV5PLNfQdcfjlhOWLPrxT6kBhxQ\"; $r = Invoke-WebRequest -Uri \"http://localhost/algimon-api/inquiries\" -Method GET -Headers @{\"Authorization\"=\"Bearer $token\"} -UseBasicParsing; $r.Content | ConvertFrom-Json | ConvertTo-Json -Depth 2)",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost/algimon-api/nonexistent-test\" -Method GET -UseBasicParsing 2>&1; Write-Host \"Status: $\\($r.StatusCode\\)\"; $r.Content)",
+      "Bash(grep -E \"\\\\.\\(json|lock\\)$\")",
+      "Bash(xargs grep *)",
+      "Bash('C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe' -u root algimon_api -e ' *)",
+      "Bash(curl -s -X GET \"http://localhost/algimon-api/products\" -H \"Content-Type: application/json\")",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s -X POST http://localhost/algimon-api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"admin@algimon.com\",\"password\":\"password\"}')",
+      "Bash(\"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root algimon_api -e \"SELECT COUNT\\(*\\) FROM services;\")",
+      "Bash(curl -s \"http://localhost/algimon-api/services\")",
+      "Bash(curl -s -X POST \"http://localhost/algimon-api/auth/login\" -H \"Content-Type: application/json\" -d '{\"email\":\"admin@algimon.com\",\"password\":\"password\"}')",
+      "Bash(php -l \"C:\\\\xampp\\\\htdocs\\\\algimon-api\\\\endpoints\\\\time-slots.php\")",
+      "Bash(php -l \"C:\\\\xampp\\\\htdocs\\\\algimon-api\\\\endpoints\\\\blocked-dates.php\")",
+      "Bash(php -l \"C:\\\\xampp\\\\htdocs\\\\algimon-api\\\\endpoints\\\\operation-rules.php\")",
+      "Bash(curl -sv \"http://localhost/algimon-api/time-slots\")"
+    ]
+  }
+}

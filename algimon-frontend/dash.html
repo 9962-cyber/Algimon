@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algimon - Staff Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dash.css">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ── Page load ── */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-on-load { opacity: 0; animation: slideUpFade 0.6s ease-out forwards; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* ── Row stagger fade-in ── */
+        @keyframes rowFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .row-animate { opacity: 0; animation: rowFadeIn 0.35s ease-out forwards; }
+
+        /* ── Detail expand ── */
+        @keyframes expandDown {
+            from { opacity: 0; transform: scaleY(0.95) translateY(-4px); }
+            to   { opacity: 1; transform: scaleY(1) translateY(0); }
+        }
+        .detail-animate { animation: expandDown 0.22s ease-out forwards; transform-origin: top; }
+
+        /* ── Row status flash ── */
+        @keyframes flashGreen {
+            0%   { background-color: transparent; }
+            30%  { background-color: #dcfce7; }
+            100% { background-color: transparent; }
+        }
+        .flash-success { animation: flashGreen 1.2s ease-out forwards; }
+
+        /* ── Button ripple ── */
+        .ripple-btn { position: relative; overflow: hidden; }
+        .ripple-btn .ripple {
+            position: absolute; border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            transform: scale(0);
+            animation: rippleAnim 0.5s linear;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+        /* ── Press feel ── */
+        button:active { transform: scale(0.96); transition: transform 0.1s; }
+
+        /* ── Sidebar mobile bounce ── */
+        @keyframes sidebarBounce {
+            0%   { transform: translateX(-100%); }
+            70%  { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+        .sidebar-open { animation: sidebarBounce 0.32s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+
+        /* ── Back to top ── */
+        #backToTop {
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+            transform: translateY(10px);
+        }
+        #backToTop.show { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        /* Stat card label spacing */
+        .stat-label { letter-spacing: 0.06em; }
+
+        /* Table cell vertical rhythm */
+        #appointment-table-body tr td { padding-top: 1rem; padding-bottom: 1rem; }
+
+        /* Modal form label spacing */
+        .modal-label { margin-bottom: 0.375rem; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased overflow-x-hidden bg-gray-50">
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-[45] hidden"></div>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="fixed inset-y-0 left-0 w-64 bg-[#2c0e0e] text-white flex flex-col shadow-xl z-50 transition-transform duration-300 transform -translate-x-full md:translate-x-0" id="sidebar">
+
+        <!-- Brand -->
+        <div class="px-4 py-4 flex items-center gap-3 border-b border-white/10 shrink-0">
+            <img src="images/algimonlogo.png" alt="Algimon Logo" class="w-10 h-10 shrink-0 object-cover rounded-full">
+            <div>
+                <h1 class="font-bold text-sm leading-tight">Algimon</h1>
+                <p class="text-[11px] text-white/50 mt-0.5">Fire Protection Staff</p>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-visible" id="staff-nav">
+            <a href="#" onclick="setActiveNav(event, 'Today')" id="navToday"
+               class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-white bg-white/20 shadow-inner font-semibold transition-all duration-200 text-[13px]">
+                <i class="fas fa-clock w-4 text-center text-sm"></i>
+                <span>Today's Appointments</span>
+            </a>
+            <a href="#" onclick="setActiveNav(event, 'All')" id="navAll"
+               class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-white hover:text-white hover:bg-white/10 transition-all duration-200 text-[13px]">
+                <i class="fas fa-calendar-day w-4 text-center text-sm"></i>
+                <span>All Appointments</span>
+            </a>
+        </nav>
+
+        <!-- Bottom: Availability + User -->
+        <div class="px-4 pb-5 pt-4 border-t border-white/10 space-y-4 shrink-0">
+
+            <!-- Availability -->
+            <div class="relative">
+                <p class="text-[10px] uppercase text-white/30 font-bold tracking-widest mb-2">My Availability</p>
+                <div id="statusDropdownTrigger" onclick="toggleStatusMenu()"
+                     class="bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 flex items-center justify-between text-xs cursor-pointer hover:bg-white/10 transition-all">
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-green-500" id="currentStatusDot"></span>
+                        <span id="currentStatusText" class="font-medium">Available</span>
+                    </span>
+                    <i class="fa-solid fa-chevron-down text-white/30 text-[10px]"></i>
+                </div>
+                <div id="statusMenu" class="hidden absolute bottom-full left-0 w-full mb-2 rounded-lg shadow-2xl z-[100] overflow-hidden bg-[#2a2a2a] border border-white/20">
+                    <div onclick="setStatus('Available', 'bg-green-500')" class="px-4 py-2.5 hover:bg-white/10 cursor-pointer text-xs flex items-center gap-2.5">
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span> Available
+                    </div>
+                    <div onclick="setStatus('Busy', 'bg-yellow-500')" class="px-4 py-2.5 hover:bg-white/10 cursor-pointer text-xs flex items-center gap-2.5">
+                        <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Busy
+                    </div>
+                    <div onclick="setStatus('Onsite', 'bg-blue-500')" class="px-4 py-2.5 hover:bg-white/10 cursor-pointer text-xs flex items-center gap-2.5">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span> Onsite
+                    </div>
+                </div>
+            </div>
+
+            <!-- User row -->
+            <div class="flex items-center justify-between gap-2">
+                <div id="accountTrigger" class="flex-1 flex items-center gap-2.5 min-w-0 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-all">
+                    <div id="user-avatar" class="w-7 h-7 bg-red-500 rounded-full flex items-center justify-center font-bold text-[10px] shrink-0">C</div>
+                    <div class="min-w-0 flex-1">
+                        <p id="user-name" class="text-[11px] font-semibold text-white truncate">Charm Heh</p>
+                        <p id="user-email" class="text-[9px] text-white/40 truncate mt-0.5">staff@algimon.com</p>
+                    </div>
+                    <i class="fas fa-key text-[10px] text-white/20"></i>
+                </div>
+                <button id="logoutButton" class="shrink-0 w-9 h-9 flex items-center justify-center bg-red-700/80 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-md">
+                    <i class="fas fa-sign-out-alt text-xs"></i>
+                </button>
+            </div>
+
+        </div><!-- /bottom section -->
+    </aside>
+
+
+
+    <!-- ===== MAIN ===== -->
+    <main class="ml-0 md:ml-64 min-h-screen">
+
+        <!-- Mobile top bar -->
+        <div class="md:hidden flex items-center bg-[#2c0e0e] px-4 py-3 sticky top-0 z-40 shadow-md">
+            <button id="mobileMenuBtn" class="w-9 h-9 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-lg active:scale-95 transition-all" aria-label="Open menu">
+                <i class="fas fa-bars text-sm"></i>
+            </button>
+            <span class="flex-1 text-center font-bold text-sm text-white">Algimon Staff</span>
+            <div class="w-9 h-9"></div>
+        </div>
+
+        <div class="px-5 py-8 md:px-10 md:py-10">
+
+        <!-- Header -->
+        <header class="mb-10 animate-on-load">
+            <p class="text-xs font-semibold text-red-700 uppercase tracking-widest mb-1" id="greetingText">Good morning</p>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight" id="pageTitle">Today's Appointments</h2>
+            <p class="text-gray-400 text-sm mt-1.5" id="pageSubtitle">Manage active deployments and service reports.</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 mb-8 animate-on-load delay-1" id="stats-container">
+            <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm transition-shadow hover:shadow-md">
+                <p class="stat-label text-[10px] uppercase text-gray-400 font-bold mb-2">Total Tasks</p>
+                <p class="text-2xl md:text-3xl font-bold text-gray-900" data-stat="total">0</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm transition-shadow hover:shadow-md">
+                <p class="stat-label text-[10px] uppercase text-blue-500 font-bold mb-2">Approved</p>
+                <p class="text-2xl md:text-3xl font-bold text-gray-900" data-stat="approved">0</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-purple-100 shadow-sm transition-shadow hover:shadow-md">
+                <p class="stat-label text-[10px] uppercase text-purple-500 font-bold mb-2">In Progress</p>
+                <p class="text-2xl md:text-3xl font-bold text-gray-900" data-stat="inprogress">0</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-green-100 shadow-sm transition-shadow hover:shadow-md">
+                <p class="stat-label text-[10px] uppercase text-green-500 font-bold mb-2">Completed</p>
+                <p class="text-2xl md:text-3xl font-bold text-gray-900" data-stat="completed">0</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-red-100 shadow-sm transition-shadow hover:shadow-md">
+                <p class="stat-label text-[10px] uppercase text-red-400 font-bold mb-2">Canceled</p>
+                <p class="text-2xl md:text-3xl font-bold text-gray-900" data-stat="canceled">0</p>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="bg-white border border-gray-100 rounded-2xl px-4 py-3.5 shadow-sm mb-5 flex flex-col md:flex-row gap-3 animate-on-load delay-2">
+            <div class="flex-1 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+                <input type="text" id="searchInput" placeholder="Search customer..."
+                    class="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 placeholder-gray-300">
+            </div>
+            <select id="statusFilter" class="w-full md:w-auto border border-gray-100 rounded-xl px-4 py-2.5 text-sm bg-gray-50 font-medium focus:outline-none cursor-pointer text-gray-600">
+                <option value="Active">Default (Active)</option>
+                <option value="All">All Statuses</option>
+                <option value="Approved">Approved</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Canceled">Canceled</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm table-container animate-on-load delay-3">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 border-b border-gray-100 text-gray-400 uppercase text-[10px] font-bold tracking-wider">
+                        <tr>
+                            <th class="px-4 md:px-7 py-4">Customer Name</th>
+                            <th class="px-4 md:px-7 py-4 hidden sm:table-cell">Schedule Date</th>
+                            <th class="px-4 md:px-7 py-4 hidden md:table-cell">Workflow Status</th>
+                            <th class="px-4 md:px-7 py-4 text-right">Quick Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointment-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+        </div><!-- /inner content -->
+    </main>
+
+    <!-- ===== PAYMENT MODAL ===== -->
+    <div id="paymentModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100 max-h-[90vh] flex flex-col">
+            <div class="bg-green-600 px-6 py-5 text-white shrink-0">
+                <h3 class="text-xl font-bold tracking-tight">Complete Service</h3>
+                <p class="text-green-100 text-xs mt-1">Fill in payment details to close this job.</p>
+            </div>
+            <div class="p-6 md:p-8 space-y-5 overflow-y-auto">
+                <input type="hidden" id="paymentApptId">
+                <div class="flex items-center gap-3 p-4 bg-green-50 border border-green-100 rounded-xl">
+                    <input type="checkbox" id="paymentCollected" class="w-5 h-5 accent-green-600 cursor-pointer shrink-0">
+                    <label for="paymentCollected" class="text-sm font-bold text-green-800 cursor-pointer uppercase tracking-wide">Confirm Payment Collected</label>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest modal-label">Price Estimate (from Admin)</label>
+                    <div id="priceEstimateDisplay" class="w-full border border-gray-100 bg-gray-50 rounded-xl p-3.5 text-sm text-gray-400 font-semibold mt-1.5">—</div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest modal-label">Actual Amount Collected *</label>
+                    <div class="relative mt-1.5">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">₱</span>
+                        <input type="number" id="actualAmount" placeholder="0.00" min="0" step="0.01"
+                            class="w-full border border-gray-200 rounded-xl p-3.5 pl-8 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-1.5 italic">* Enter the exact amount received from the customer.</p>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest modal-label">Official Receipt Number *</label>
+                    <input type="text" id="receiptNumber" placeholder="Enter OR #" class="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:ring-2 focus:ring-green-500 outline-none mt-1.5">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeModal('paymentModal')" class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-xs font-bold uppercase hover:bg-gray-50 transition-colors">Cancel</button>
+                    <button onclick="submitCompletion()" class="flex-1 px-4 py-2.5 bg-green-600 text-white rounded-xl text-xs font-bold uppercase hover:bg-green-700 transition-colors">Confirm & Finish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== COMPLETION SUMMARY MODAL ===== -->
+    <div id="completionSummaryModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-gray-100 text-center max-h-[90vh] flex flex-col">
+            <div class="bg-green-600 px-8 py-7 text-white shrink-0">
+                <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-check text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold tracking-tight">Service Completed!</h3>
+            </div>
+            <div class="p-6 md:p-8 space-y-5 overflow-y-auto">
+                <div class="bg-green-50 border border-green-100 rounded-2xl p-5 space-y-3.5 text-left">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer</span>
+                        <span class="text-sm font-semibold text-gray-800" id="summaryCustomer">—</span>
+                    </div>
+                    <div class="border-t border-green-100 pt-3.5 flex justify-between items-center">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Admin Estimate</span>
+                        <span class="text-sm text-gray-400" id="summaryEstimate">—</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Amount Collected</span>
+                        <span class="text-lg font-bold text-green-700" id="summaryAmount">—</span>
+                    </div>
+                    <div class="border-t border-green-100 pt-3.5 flex justify-between items-center">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">OR Number</span>
+                        <span class="text-sm font-semibold text-gray-800" id="summaryReceipt">—</span>
+                    </div>
+                </div>
+                <button onclick="closeModal('completionSummaryModal')" class="w-full px-4 py-3 bg-green-600 text-white rounded-xl text-xs font-bold uppercase hover:bg-green-700 transition-colors">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LOGOUT MODAL ===== -->
+   <div id="logoutModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] modal-transition" onclick="handleModalBackdrop(event)">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 transform transition-all" onclick="event.stopPropagation()">
+            <div class="p-5 text-center">
+                <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-sign-out-alt text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 mb-1">Ready to leave?</h3>
+                <p class="text-gray-500 text-xs mb-5">Are you sure you want to logout from Algimon Admin?</p>
+                <div class="flex gap-2">
+                    <button id="cancelLogoutBtn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg text-sm">Cancel</button>
+                    <button id="confirmLogoutBtn" class="flex-1 bg-red-700 hover:bg-red-800 text-white font-semibold py-2 rounded-lg text-sm shadow-md">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="passwordModal" class="modal-transition fixed inset-0 z-50 flex items-center justify-center bg-black/50" style="opacity: 0; visibility: hidden;">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div class="bg-[#3d1a1a] p-6 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-2 rounded-full">
+                    <i class="fas fa-key"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold">Change Password</h3>
+                    <p class="text-xs text-gray-300">Update your account password</p>
+                </div>
+            </div>
+            <button id="closePassX" class="text-white/70 hover:text-white">&times;</button>
+        </div>
+
+        <form id="changePasswordForm" class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Current Password *</label>
+                <div class="relative">
+                    <input type="password" id="currentPass" class="w-full border rounded-lg p-2.5 pr-10 focus:ring-2 focus:ring-[#3d1a1a] outline-none" placeholder="Enter your current password" required>
+                    <i class="far fa-eye absolute right-3 top-3.5 text-gray-400 cursor-pointer"></i>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">New Password *</label>
+                <div class="relative">
+                    <input type="password" id="newPass" class="w-full border rounded-lg p-2.5 pr-10 focus:ring-2 focus:ring-[#3d1a1a] outline-none" placeholder="Enter your new password" required>
+                    <i class="far fa-eye absolute right-3 top-3.5 text-gray-400 cursor-pointer"></i>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Confirm New Password *</label>
+                <div class="relative">
+                    <input type="password" id="confirmPass" class="w-full border rounded-lg p-2.5 pr-10 focus:ring-2 focus:ring-[#3d1a1a] outline-none" placeholder="Confirm your new password" required>
+                    <i class="far fa-eye absolute right-3 top-3.5 text-gray-400 cursor-pointer"></i>
+                </div>
+                <p class="text-[10px] text-gray-500 mt-1">Password must be at least 8 characters long</p>
+            </div>
+
+            <div id="passwordError" class="text-red-500 text-xs hidden">Passwords do not match!</div>
+
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" id="closePassBtn" class="px-6 py-2 border rounded-lg text-gray-600 hover:bg-gray-50 font-semibold">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-[#3d1a1a] text-white rounded-lg hover:bg-[#4d2626] font-semibold">Update Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <!-- ===== CANCEL MODAL ===== -->
+    <div id="cancelModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100 mx-auto">
+            <div class="bg-[#cc0000] px-7 py-5 text-white">
+                <h3 class="text-xl font-bold tracking-tight">Cancel Appointment</h3>
+                <p class="text-red-100 text-xs mt-1">This action cannot be undone.</p>
+            </div>
+            <div class="p-7 md:p-8 space-y-5">
+                <input type="hidden" id="cancelId">
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Reason for Cancellation *</label>
+                    <textarea id="cancelReason" class="w-full border border-gray-200 rounded-xl p-4 text-sm h-32 focus:ring-2 focus:ring-red-500 outline-none resize-none bg-gray-50" placeholder="Provide reason..."></textarea>
+                </div>
+                <div class="flex flex-col-reverse md:flex-row justify-end gap-3 pt-2">
+                    <button onclick="closeModal('cancelModal')" class="w-full md:w-auto px-8 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">Back</button>
+                    <button onclick="confirmCancel()" class="w-full md:w-auto px-6 py-2.5 bg-[#cc0000] text-white rounded-xl text-sm font-bold hover:bg-red-800 transition-colors">Confirm Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESCHEDULE MODAL ===== -->
+    <div id="rescheduleModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100 mx-auto">
+            <div class="bg-red-600 px-7 py-5 text-white">
+                <h3 class="text-xl font-bold tracking-tight">Reschedule</h3>
+                <p class="text-red-100 text-xs mt-1">Choose a new date and time.</p>
+            </div>
+            <div class="p-7 md:p-8 space-y-5">
+                <input type="hidden" id="rescheduleId">
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">New Date</label>
+                    <input type="date" id="rescheduleDate" class="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">New Time</label>
+                    <input type="time" id="rescheduleTime" class="w-full border border-gray-200 rounded-xl p-3.5 text-sm focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div class="flex flex-col-reverse md:flex-row justify-end gap-3 pt-2">
+                    <button onclick="closeModal('rescheduleModal')" class="w-full md:w-auto px-6 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">Cancel</button>
+                    <button onclick="confirmReschedule()" class="w-full md:w-auto px-6 py-2.5 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-colors">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BACK TO TOP ===== -->
+    <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        class="fixed bottom-6 right-5 z-[150] w-10 h-10 bg-[#2c0e0e] text-white rounded-full shadow-lg flex items-center justify-center hover:bg-[#3d1a1a] active:scale-90 transition-all md:bottom-8 md:right-8">
+        <i class="fas fa-chevron-up text-xs"></i>
+    </button>
+
+    <!-- ===== PULL TO REFRESH (mobile) ===== -->
+    <div id="pullIndicator" class="fixed top-0 left-0 right-0 z-[60] flex items-center justify-center bg-[#2c0e0e] text-white text-xs font-medium gap-2 overflow-hidden" style="height:0; opacity:0;">
+        <i class="fas fa-arrow-rotate-right" id="pullIcon"></i>
+        <span id="pullText">Pull to refresh</span>
+    </div>
+
+    <!-- ===== BACK TO TOP ===== -->
+    <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-6 z-[150] bg-[#2c0e0e] text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 hover:bg-[#3d1a1a] transition-colors">
+        <i class="fas fa-arrow-up text-[10px]"></i> Back to top
+    </button>
+
+    <script src="shared.js"></script>
+    <script>
+        const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+        if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', toggleSidebar);
+    </script>
+</body>
+</html>

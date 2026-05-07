@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algimon - Client Portal</title>
+    <link rel="icon" type="image/png" href="images/algimonlogo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Oswald:wght@400;500;700&family=Dancing+Script:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <a href="home.html" class="back-home">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        BACK TO HOME
+    </a>
+
+    <div class="page-container">
+        <div class="split-layout">
+            
+            <div class="left-panel">
+                <div class="brand-header">
+                    <div class="logo-circle">
+                        <img src="images/algimonlogo.png" alt="Algimon Logo" class="logo-image" onerror="this.src='https://via.placeholder.com/90'">
+                    </div>
+                    <h1 class="brand-name">ALGIMON</h1>
+                    <p class="brand-subtitle">FIRE PROTECTION SERVICES</p>
+                </div>
+                
+                <div class="feature-list">
+                    <h3>Client Portal Features</h3>
+                    <ul>
+                        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#df5345" stroke-width="2"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> Schedule fast inspections</li>
+                        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#df5345" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Access safety certificates</li>
+                        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#df5345" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M13 2v7h7"/></svg> View past appointment logs</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="card-header">
+                    <h2 id="form-title">WELCOME BACK</h2>
+                    <p id="form-subtitle">Manage your fire safety appointments</p>
+                </div>
+
+                <div class="card-body">
+                    <form id="form-login" class="portal-form active-form">
+                        <div id="login-message" class="form-message"></div>
+                        
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label for="login-email">Email</label>
+                            <div class="input-icon-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+                                <input type="email" id="login-email" placeholder="your.email@example.com" required>
+                            </div>
+                            <span class="error-text" id="login-email-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <div class="input-icon-wrapper password-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                                <input type="password" id="login-password" placeholder="••••••••" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('login-password')">Show</button>
+                            </div>
+                        </div>
+
+                        <div class="forgot-password-link" style="text-align: right;">
+                            <button type="button" class="text-link" onclick="openModal('forgot-password-modal')">Forgot password?</button>
+                        </div>
+
+                        <div class="checkbox-group" style="margin: 8px 0 16px;">
+                            <input type="checkbox" id="login-remember-me">
+                            <label for="login-remember-me">Remember me on this device</label>
+                        </div>
+
+                        <button type="submit" id="btn-login" class="submit-btn">LOGIN</button>
+                        
+                        <div class="switch-form-prompt">
+                            Don't have an account? <span class="text-link inline switch-trigger" onclick="switchTab('signup')">Create one &rarr;</span>
+                        </div>
+                    </form>
+
+                    <form id="form-signup" class="portal-form">
+                        <div id="signup-message" class="form-message"></div>
+
+                        <div class="form-row" style="margin-top: 10px;">
+                            <div class="form-group half-width">
+                                <label for="signup-fname">First Name</label>
+                                <div class="input-icon-wrapper">
+                                    <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    <input type="text" id="signup-fname" placeholder="First Name" required>
+                                </div>
+                            </div>
+                            <div class="form-group half-width">
+                                <label for="signup-lname">Last Name</label>
+                                <div class="input-icon-wrapper">
+                                    <input type="text" id="signup-lname" placeholder="Last Name" required style="padding-left: 14px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-email">Email</label>
+                            <div class="input-icon-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+                                <input type="email" id="signup-email" placeholder="your.email@example.com" required>
+                            </div>
+                            <span class="error-text" id="signup-email-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-mobile">Mobile Number</label>
+                            <div class="input-icon-wrapper phone-wrapper">
+                                <span class="phone-prefix">+63</span>
+                                <input type="tel" id="signup-mobile" placeholder="09XX XXX XXXX" maxlength="13" required>
+                            </div>
+                            <span class="error-text" id="signup-mobile-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <div class="input-icon-wrapper password-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                                <input type="password" id="signup-password" placeholder="••••••••" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('signup-password')">Show</button>
+                            </div>
+                            <div class="strength-meter">
+                                <div class="strength-fill" id="signup-strength-fill"></div>
+                            </div>
+                            <div class="strength-text" id="signup-strength-text">Min 8 chars &middot; 1 uppercase &middot; 1 special character</div>
+                            <div class="password-reqs-hint" id="signup-password-reqs"></div>
+                            <div class="password-policy-box">
+                                <span class="policy-icon">&#128274;</span>
+                                <span>Password must have: <strong>8+ characters</strong>, <strong>1 uppercase letter</strong> (A&ndash;Z), and <strong>1 special character</strong> (e.g.&nbsp;!&nbsp;@&nbsp;#&nbsp;$&nbsp;%)</span>
+                            </div>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="signup-terms" required>
+                            <label for="signup-terms">I agree to the <button type="button" class="text-link inline" onclick="openModal('terms-modal')">Terms</button> & <button type="button" class="text-link inline" onclick="openModal('privacy-modal')">Privacy Policy</button></label>
+                        </div>
+
+                        <button type="submit" id="btn-signup" class="submit-btn">CREATE ACCOUNT</button>
+
+                        <div class="switch-form-prompt">
+                            Already have an account? <span class="text-link inline switch-trigger" onclick="switchTab('login')">&larr; Log in</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer-text">
+            Need assistance? Contact us at <span class="highlight">(02)852 23027</span>
+        </footer>
+    </div>
+
+    <div id="forgot-password-modal" class="modal-overlay">
+        <div class="modal-content forgot-password-modal">
+            <button class="modal-close" onclick="closeModal('forgot-password-modal')">×</button>
+            
+            <div class="modal-icon-wrapper">
+                <div class="modal-logo-circle">
+                    <img src="images/algimonlogo.png" alt="Algimon" onerror="this.src='https://via.placeholder.com/72'">
+                </div>
+            </div>
+            
+            <h2 class="modal-title">Forgot Password?</h2>
+            <p class="modal-subtitle">No worries! Enter your email address and we'll send you a link to reset your password.</p>
+            
+            <form id="form-forgot" onsubmit="handleForgotSubmit(event)">
+                <div class="forgot-form-group">
+                    <label for="forgot-email">Email Address</label>
+                    <div class="forgot-input-wrapper">
+                        <input type="email" id="forgot-email" name="email" placeholder="Enter your email address" required>
+                        <i class="forgot-input-icon fa-solid fa-envelope"></i>
+                    </div>
+                </div>
+                <button type="submit" class="forgot-submit-btn" id="btn-forgot">SEND RESET LINK</button>
+            </form>
+            
+            <div class="modal-footer-link">
+                <button class="back-link" onclick="closeModal('forgot-password-modal')">Back to login</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="terms-modal" class="modal-overlay">
+        <div class="modal-content terms-content">
+            <button class="modal-close" onclick="closeModal('terms-modal')">×</button>
+            <h2 class="modal-title">Terms & Services</h2>
+            <div class="terms-scroll-box">
+                <h3>Welcome to the Algimon Fire Protection Services Client Portal</h3>
+                <p>By registering an account and utilizing our inquiry and scheduling system, you agree to the following terms:</p>
+                
+                <h4>Account Responsibilities</h4>
+                <p>You agree to provide accurate, current, and complete information during registration. You are solely responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.</p>
+                
+                <h4>Appointment Scheduling</h4>
+                <p>All service inquiries and appointments booked through this portal are considered requests. They remain subject to availability, review, and final confirmation by our dispatch team. We reserve the right to reschedule or cancel appointments as necessary.</p>
+                
+                <h4>Not for Emergencies</h4>
+                <p>This portal is designed exclusively for standard service scheduling, certifications, and general inquiries. It is not an emergency response platform. In the event of a fire or immediate safety emergency, please contact your local emergency services immediately.</p>
+                
+                <h4>System Usage</h4>
+                <p>You agree to use this portal only for its intended purpose. Any attempt to disrupt the system, submit false inquiries, or access data belonging to other clients is strictly prohibited and will result in immediate account termination.</p>
+                
+                <h4>Service Limitations</h4>
+                <p>While we strive to provide excellent service, Algimon Fire Protection Services reserves the right to modify, suspend, or discontinue any aspect of the portal at any time without prior notice.</p>
+                
+                <h4>Communication</h4>
+                <p>By using this portal, you consent to receive communications from us regarding your appointments, service updates, and important safety information via email or phone.</p>
+                
+                <h4>Liability</h4>
+                <p>Algimon Fire Protection Services is not liable for any indirect, incidental, or consequential damages arising from your use of this portal or our services.</p>
+            </div>
+            <button class="submit-btn" onclick="closeModal('terms-modal')">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="privacy-modal" class="modal-overlay">
+        <div class="modal-content terms-content">
+            <button class="modal-close" onclick="closeModal('privacy-modal')">×</button>
+            <h2 class="modal-title">Privacy Policy</h2>
+            <div class="terms-scroll-box">
+                <h3>Your Privacy is Important to Algimon Fire Protection Services</h3>
+                <p>This policy outlines how we collect, use, and protect the information you provide through our client portal:</p>
+                
+                <h4>Information Collection</h4>
+                <p>When you create an account or submit an inquiry, we collect necessary personal information, such as your name, email address, contact numbers, and service location details.</p>
+                
+                <h4>How We Use Your Data</h4>
+                <p>The information collected is used strictly to manage your fire safety appointments, process your service inquiries, provide safety certificates, and communicate with you regarding your scheduled services.</p>
+                
+                <h4>Data Security & Sharing</h4>
+                <p>Your data is securely stored using industry-standard measures to protect against unauthorized access. We respect your privacy: we do not and will never sell your personal data to third parties. Data is only shared internally with our dispatch and service teams to fulfill your requests.</p>
+                
+                <h4>Your Rights</h4>
+                <p>You have the right to access, update, or correct your personal information at any time through your account dashboard. If you wish to permanently delete your account and associated data, please contact our support team.</p>
+                
+                <h4>Data Retention</h4>
+                <p>We retain your personal information only as long as necessary to provide our services and comply with legal obligations. Service records and certificates are maintained for compliance and warranty purposes.</p>
+                
+                <h4>Cookies and Tracking</h4>
+                <p>Our portal uses essential cookies to maintain your session and improve user experience. We do not use tracking cookies for advertising purposes.</p>
+                
+                <h4>Third-Party Services</h4>
+                <p>We may use trusted third-party service providers for payment processing and communication delivery. These providers are contractually bound to protect your data and only use it for specific service functions.</p>
+                
+                <h4>Policy Updates</h4>
+                <p>We may update this privacy policy from time to time. Any changes will be posted on this page with an updated revision date.</p>
+                
+                <h4>Contact Information</h4>
+                <p>If you have questions about this privacy policy or our data practices, please contact our support team through the portal or at our business contact information.</p>
+            </div>
+            <button class="submit-btn" onclick="closeModal('privacy-modal')">CLOSE</button>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>
